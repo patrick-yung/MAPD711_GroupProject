@@ -16,6 +16,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
+    data class Clinic(
+        val name: String,
+        val latitude: Double,
+        val longitude: Double,
+        val description: String
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,9 +47,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val clinics = listOf(
+            Clinic("Toronto General Hospital", 43.6592, -79.3888, "University Health Network"),
+            Clinic("Mount Sinai Hospital", 43.6568, -79.3925, "Academic medical center"),
+            Clinic("St. Michael's Hospital", 43.6546, -79.3805, "Downtown teaching hospital"),
+        )
+
+        // Add markers for all clinics
+        clinics.forEach { clinic ->
+            val location = LatLng(clinic.latitude, clinic.longitude)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(location)
+                    .title(clinic.name)
+                    .snippet(clinic.description)
+            )
+            }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(43.6592, -79.3888)))
+
     }
 }
