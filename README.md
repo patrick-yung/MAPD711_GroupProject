@@ -9,10 +9,10 @@ team member should have commit with
 implementation for assigned to team member screen.
 It can be done in a separate git branch per student.
 
-# IMPORTANT
-* I hided my apikey, so in Gradle Scripts/ local.properties file create a line as below
-* {apiKey = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx} 
 
+<font color="red"> # IMPORTANT </font>
+<font color="red"> * I hided my apikey, so in Gradle Scripts/ local.properties file create a line as below </font>
+<font color="red"> * {apiKey = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}  </font>
 
 # (START) Sync Github Project to VSCode
 1. Create a empty project for the group project
