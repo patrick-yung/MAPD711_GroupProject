@@ -82,7 +82,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.133"
-        app:srcCompat="@drawable/appointmnent" />
+        app:srcCompat="@drawable/calender" />
 
     <TextView
         android:id="@+id/textView5"
