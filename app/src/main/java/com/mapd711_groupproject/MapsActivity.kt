@@ -1,10 +1,7 @@
 package com.mapd711_groupproject
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -47,9 +44,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-
-        Log.d("MapsActivity", "onMapReady called")
-        Toast.makeText(this, "Map ready", Toast.LENGTH_SHORT).show()
         mMap = googleMap
 
         val clinics = listOf(
@@ -69,14 +63,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             }
 
-        // after adding markers
-        val toronto = LatLng(43.6592, -79.3888)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(toronto, 13f))
-// or animate
-// mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(toronto, 13f))
-
-
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(43.6592, -79.3888)))
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(43.6592, -79.3888), 15f))
     }
 }
