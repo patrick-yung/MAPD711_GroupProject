@@ -2,8 +2,10 @@ package com.mapd711_groupproject
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,16 +22,33 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
         val btnMap = findViewById<Button>(R.id.btnMap)
         btnMap.setOnClickListener {
-            onMapClick(it)
-        }
-    }
-
-        fun onMapClick(view: View) {
+            Log.d("MainActivity", "Button clicked")
+           // onMapClick(it)
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
 
-}
+        val btnHome = findViewById<Button>(R.id.btnHome)
+        btnHome.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
+
+
+//        val btnAppointment = findViewById<Button>(R.id.btnAppointment)
+//        btnAppointment.setOnClickListener {
+//            val intent = Intent(this, AppointmentActivity::class.java)
+//            startActivity(intent)
+//        }
+
+//        fun onMapClick(view: View) {
+//            val intent = Intent(this, MapsActivity::class.java)
+//            startActivity(intent)
+//        }
+    }
+
+

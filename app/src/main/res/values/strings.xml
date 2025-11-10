@@ -1,4 +1,21 @@
 <resources>
     <string name="app_name">MAPD711_GroupProject</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="title">Welcome to PCDAMS</string>
+    <string name="homeBtnText">Home</string>
+    <string name="mapBtnText">Map</string>
+    <string name="appointmentBtnText">Appointment</string>
+
+    <string name="num_patients">1258</string>
+    <string name="patientsText">Total Patients</string>
+    <string name="num_appointments">50</string>
+    <string name="appointmentsText">Appointments Made</string>
+    <string name="patientsBtn">Patients</string>
+    <string name="criticalBtn">Critical</string>
+    <string name="clinicTestBtn">Clinic Test</string>
+    <string name="paitentsInfo">Patients</string>
+    <string name="welcomeTitle">Welcome Back Doctor</string>
+    <string name="header"><![CDATA[Patient Clinical Data & Appointment Management System]]></string>
+    <string name="fabBtnText">Add Patient</string>
+
 </resources>
