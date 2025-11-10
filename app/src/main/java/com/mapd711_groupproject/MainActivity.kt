@@ -39,12 +39,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-//        val btnAppointment = findViewById<Button>(R.id.btnAppointment)
-//        btnAppointment.setOnClickListener {
-//            val intent = Intent(this, AppointmentActivity::class.java)
-//            startActivity(intent)
-//        }
-
 //        fun onMapClick(view: View) {
 //            val intent = Intent(this, MapsActivity::class.java)
 //            startActivity(intent)
