@@ -1,8 +1,7 @@
 package com.mapd711_groupproject
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -64,7 +63,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             )
             }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(43.6592, -79.3888)))
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(43.6592, -79.3888), 15f))
     }
 }
