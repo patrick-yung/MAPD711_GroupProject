@@ -18,4 +18,12 @@
     <string name="header"><![CDATA[Patient Clinical Data & Appointment Management System]]></string>
     <string name="fabBtnText">Add Patient</string>
 
+
+    <string name="addPatientText">Add Patient</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_age">Enter Age</string>
+    <string name="enter_phone_num">Enter Phone Number</string>
+    <string name="enter_health_condition">Enter Health Issues</string>
+    <string name="saveBtn">Save</string>
+
 </resources>

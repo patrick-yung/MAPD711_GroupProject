@@ -1,10 +1,12 @@
 package com.mapd711_groupproject
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,16 +35,41 @@ class HomeActivity : AppCompatActivity() {
         }
 
         var patientsBtn = findViewById<Button>(R.id.button5)
-        var criticalBtn = findViewById<Button>(R.id.button6)
-        var clinicTestBtn = findViewById<Button>(R.id.button4)
+        var criticalBtn = findViewById<Button>(R.id.button4)
+        var clinicTestBtn = findViewById<Button>(R.id.button6)
         var appointmentBtn = findViewById<Button>(R.id.button7)
         var patientsInfo = findViewById<TextView>(R.id.textView7)
         var fabAdd = findViewById<Button>(R.id.fabAdd)
 
+        val addPatientLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val name = data?.getStringExtra("patientName")
+                val age = data?.getStringExtra("patientAge")
+                val phone = data?.getStringExtra("patientPhone")
+                val condition = data?.getStringExtra("patientCondition")
+                patientsInfo.text = """
+                          Name: $name
+                          Age: $age
+                          Phone: $phone
+                          Issues: $condition
+                          """.trimIndent()
 
-        //patients button will show text in patientsInfo
+            }
+        }
+
+        fabAdd.setOnClickListener {
+            val intent = Intent(this, AddPatientActivity::class.java)
+            addPatientLauncher.launch(intent)
+        }
+
+
+        //patients button will show
         patientsBtn.setOnClickListener {
-            patientsInfo.text = "Patients"
+            addPatient()
+            patientsInfo.text = "Patients: $patientCount"
 
         }
 
@@ -62,10 +89,5 @@ class HomeActivity : AppCompatActivity() {
 
         }
 
-        //fab button will open add patient activity
-        fabAdd.setOnClickListener {
-            val intent = Intent(this, AddPatientActivity::class.java)
-            startActivity(intent)
-        }
     }
 }
