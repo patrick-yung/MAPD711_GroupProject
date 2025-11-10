@@ -22,7 +22,6 @@ class HomeActivity : AppCompatActivity() {
 
 
         var patientCount = 1258
-
         //patient count will add patient to patient count
         fun addPatient() {
             patientCount++
@@ -33,15 +32,12 @@ class HomeActivity : AppCompatActivity() {
             appointmentCount++
         }
 
-
         var patientsBtn = findViewById<Button>(R.id.button5)
         var criticalBtn = findViewById<Button>(R.id.button6)
         var clinicTestBtn = findViewById<Button>(R.id.button4)
         var appointmentBtn = findViewById<Button>(R.id.button7)
         var patientsInfo = findViewById<TextView>(R.id.textView7)
         var fabAdd = findViewById<Button>(R.id.fabAdd)
-
-
 
 
         //patients button will show text in patientsInfo
@@ -71,13 +67,5 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, AddPatientActivity::class.java)
             startActivity(intent)
         }
-
-
-
-
-
-
     }
-
-
 }
