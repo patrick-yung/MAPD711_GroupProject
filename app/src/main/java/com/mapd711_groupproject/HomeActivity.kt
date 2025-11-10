@@ -3,7 +3,9 @@ package com.mapd711_groupproject
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +23,10 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        var lastPatientName = intent.getStringExtra("patientName")
+        var lastPatientAge = intent.getStringExtra("patientAge")
+        var lastPatientPhone = intent.getStringExtra("patientPhone")
+        var lastPatientCondition = intent.getStringExtra("patientCondition")
 
 
         var patientCount = 1258
@@ -40,31 +46,55 @@ class HomeActivity : AppCompatActivity() {
         var appointmentBtn = findViewById<Button>(R.id.button7)
         var patientsInfo = findViewById<TextView>(R.id.textView7)
         var fabAdd = findViewById<Button>(R.id.fabAdd)
+        var buttonEdit = findViewById< ImageButton>(R.id.buttonEdit)
+
+        //initial state
+        buttonEdit.visibility = View.GONE
+        patientsInfo.text = "Patients: $patientCount"
+
 
         val addPatientLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                val name = data?.getStringExtra("patientName")
-                val age = data?.getStringExtra("patientAge")
-                val phone = data?.getStringExtra("patientPhone")
-                val condition = data?.getStringExtra("patientCondition")
-                patientsInfo.text = """
-                          Name: $name
-                          Age: $age
-                          Phone: $phone
-                          Issues: $condition
+                lastPatientName = data?.getStringExtra("patientName")
+                lastPatientAge = data?.getStringExtra("patientAge")
+                lastPatientPhone = data?.getStringExtra("patientPhone")
+                lastPatientCondition = data?.getStringExtra("patientCondition")
+                if (lastPatientName != null) {
+                    patientsInfo.text = """
+                          Name: $lastPatientName
+                          Age: $lastPatientAge
+                          Phone: $lastPatientPhone
+                          Issues: $lastPatientCondition
                           """.trimIndent()
-
+                    buttonEdit.visibility = View.VISIBLE
+                } else {
+                    patientsInfo.text = "No patient data available"
+                    buttonEdit.visibility = View.GONE
+                }
             }
         }
 
+        //fab button will launch add patient activity
         fabAdd.setOnClickListener {
             val intent = Intent(this, AddPatientActivity::class.java)
             addPatientLauncher.launch(intent)
         }
 
+        //when click on the button edit it will keep this patient information in the add patient screen
+        buttonEdit.setOnClickListener {
+            if (lastPatientName != null) {
+                val intent = Intent(this, AddPatientActivity::class.java)
+                intent.putExtra("isEdit", true)
+                intent.putExtra("patientName", lastPatientName)
+                intent.putExtra("patientAge", lastPatientAge)
+                intent.putExtra("patientPhone", lastPatientPhone)
+                intent.putExtra("patientCondition", lastPatientCondition)
+                addPatientLauncher.launch(intent)
+            }
+        }
 
         //patients button will show
         patientsBtn.setOnClickListener {

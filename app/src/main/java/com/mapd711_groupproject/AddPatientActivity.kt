@@ -28,10 +28,29 @@ class AddPatientActivity : AppCompatActivity() {
         var condition = findViewById<EditText>(R.id.editTextCondition)
         var saveBtn = findViewById<Button>(R.id.button2)
 
+        val isEdit = intent.getBooleanExtra("isEdit", false)
+        if (isEdit) {
+            name.setText(intent.getStringExtra("patientName"))
+            age.setText(intent.getStringExtra("patientAge"))
+            phone.setText(intent.getStringExtra("patientPhone"))
+            condition.setText(intent.getStringExtra("patientCondition"))
+        }
+
         //save button will save the patient information and show a toast message
         saveBtn.setOnClickListener {
-            //validation
-            if (name.text.isEmpty() || age.text.isEmpty() || phone.text.isEmpty() || condition.text.isEmpty()) {
+
+            //validation and for age and phone only take number
+            if (age.text.toString().toIntOrNull() == null) {
+                Toast.makeText(this, "Please enter a valid age", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (phone.text.toString().toIntOrNull() == null) {
+                Toast.makeText(this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //validation for name and condition cannot be empty
+            if (name.text.isEmpty()  || condition.text.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
