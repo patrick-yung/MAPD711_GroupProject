@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">MAPD711_GroupProject</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title">Welcome to PCDAMS</string>
+    <string name="homeBtnText">Home</string>
+    <string name="mapBtnText">Map</string>
+    <string name="appointmentBtnText">Appointment</string>
+
+    <string name="num_patients">1258</string>
+    <string name="patientsText">Total Patients</string>
+    <string name="num_appointments">50</string>
+    <string name="appointmentsText">Appointments Made</string>
+    <string name="patientsBtn">Patients</string>
+    <string name="criticalBtn">Critical</string>
+    <string name="clinicTestBtn">Clinic Test</string>
+    <string name="patientsInfo">Patients</string>
+    <string name="welcomeTitle">Welcome Back Doctor</string>
+    <string name="header"><![CDATA[Patient Clinical Data & Appointment Management System]]></string>
+    <string name="fabBtnText">Add Patient</string>
+
+
+    <string name="addPatientText">Add Patient</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_age">Enter Age</string>
+    <string name="enter_phone_num">Enter Phone Number</string>
+    <string name="enter_health_condition">Enter Health Issues</string>
+    <string name="saveBtn">Save</string>
+    <string name="edit_patient">edit_icon</string>
+
+
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
+
+
+</resources>
