@@ -27,9 +27,12 @@
     <string name="saveBtn">Save</string>
     <string name="edit_patient">edit_icon</string>
 
+<<<<<<< HEAD
 
     <string name="open_drawer">Open navigation drawer</string>
     <string name="close_drawer">Close navigation drawer</string>
 
 
+=======
+>>>>>>> 9fbd727a9c42aef0b94fdce1dc2f347d6bfdb20b
 </resources>
