@@ -9,28 +9,30 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
+
+        // ✅ setup navigation drawer (hamburger)
+        setupDrawer(R.id.nav_home)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         var lastPatientName = intent.getStringExtra("patientName")
         var lastPatientAge = intent.getStringExtra("patientAge")
         var lastPatientPhone = intent.getStringExtra("patientPhone")
         var lastPatientCondition = intent.getStringExtra("patientCondition")
 
-
         var patientCount = 1258
-        //patient count will add patient to patient count
         fun addPatient() {
             patientCount++
         }
@@ -46,12 +48,11 @@ class HomeActivity : AppCompatActivity() {
         var appointmentBtn = findViewById<Button>(R.id.button7)
         var patientsInfo = findViewById<TextView>(R.id.textView7)
         var fabAdd = findViewById<Button>(R.id.fabAdd)
-        var buttonEdit = findViewById< ImageButton>(R.id.buttonEdit)
+        var buttonEdit = findViewById<ImageButton>(R.id.buttonEdit)
 
-        //initial state
+        // initial state
         buttonEdit.visibility = View.GONE
         patientsInfo.text = "Patients: $patientCount"
-
 
         val addPatientLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -77,13 +78,13 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        //fab button will launch add patient activity
+        // fab button opens AddPatientActivity
         fabAdd.setOnClickListener {
             val intent = Intent(this, AddPatientActivity::class.java)
             addPatientLauncher.launch(intent)
         }
 
-        //when click on the button edit it will keep this patient information in the add patient screen
+        // edit button reopens AddPatientActivity with existing info
         buttonEdit.setOnClickListener {
             if (lastPatientName != null) {
                 val intent = Intent(this, AddPatientActivity::class.java)
@@ -96,28 +97,22 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        //patients button will show
+        // button logic
         patientsBtn.setOnClickListener {
             addPatient()
             patientsInfo.text = "Patients: $patientCount"
-
         }
 
-        //critical button will display text in patientsInfo
         criticalBtn.setOnClickListener {
             patientsInfo.text = "Critical"
         }
 
-        //clinic test button will display text in patientsInfo
         clinicTestBtn.setOnClickListener {
             patientsInfo.text = "Clinic Test"
         }
 
-       //appointment button will show text in patientsInfo
         appointmentBtn.setOnClickListener {
             patientsInfo.text = "Appointment"
-
         }
-
     }
 }

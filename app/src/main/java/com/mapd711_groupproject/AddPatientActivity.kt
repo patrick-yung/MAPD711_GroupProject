@@ -7,26 +7,32 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class AddPatientActivity : AppCompatActivity() {
+class AddPatientActivity : BaseActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_add_patient)
+
+        // ✅ navigation drawer (hamburger)
+        setupDrawer(R.id.nav_home)
+
+        // ✅ edge-to-edge layout
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        var name = findViewById<EditText>(R.id.editTextName)
-        var age = findViewById<EditText>(R.id.editTextAge)
-        var phone = findViewById<EditText>(R.id.editTextPhone)
-        var condition = findViewById<EditText>(R.id.editTextCondition)
-        var saveBtn = findViewById<Button>(R.id.button2)
+        // 🧩 input fields
+        val name = findViewById<EditText>(R.id.editTextName)
+        val age = findViewById<EditText>(R.id.editTextAge)
+        val phone = findViewById<EditText>(R.id.editTextPhone)
+        val condition = findViewById<EditText>(R.id.editTextCondition)
+        val saveButton = findViewById<Button>(R.id.button2)
 
         val isEdit = intent.getBooleanExtra("isEdit", false)
         if (isEdit) {
@@ -36,47 +42,49 @@ class AddPatientActivity : AppCompatActivity() {
             condition.setText(intent.getStringExtra("patientCondition"))
         }
 
-        //save button will save the patient information and show a toast message
-        saveBtn.setOnClickListener {
+        // ✅ validation and save logic
+        saveButton.setOnClickListener {
+            val nameText = name.text.toString().trim()
+            val ageText = age.text.toString().trim()
+            val phoneText = phone.text.toString().trim()
+            val conditionText = condition.text.toString().trim()
 
-            //validation and for age and phone only take number
-            if (age.text.toString().toIntOrNull() == null) {
+            if (nameText.isEmpty() || conditionText.isEmpty() ||
+                ageText.isEmpty() || phoneText.isEmpty()
+            ) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (ageText.toIntOrNull() == null) {
                 Toast.makeText(this, "Please enter a valid age", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (phone.text.toString().toIntOrNull() == null) {
+
+            if (phoneText.toIntOrNull() == null) {
                 Toast.makeText(this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            //validation for name and condition cannot be empty
-            if (name.text.isEmpty()  || condition.text.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            //save patient information
-            val patientName = name.text.toString()
-            val patientAge = age.text.toString()
-            val patientPhone = phone.text.toString()
-            val patientCondition = condition.text.toString()
-            //show toast message
             Toast.makeText(this, "Patient Added", Toast.LENGTH_SHORT).show()
-            //clear the fields
+
+            // ✅ send data back
+            val resultIntent = Intent().apply {
+                putExtra("patientName", nameText)
+                putExtra("patientAge", ageText)
+                putExtra("patientPhone", phoneText)
+                putExtra("patientCondition", conditionText)
+            }
+
+            setResult(Activity.RESULT_OK, resultIntent)
+
+            // clear inputs
             name.text.clear()
             age.text.clear()
             phone.text.clear()
             condition.text.clear()
 
-            //show the data in home activity use intent
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("patientName", patientName)
-            intent.putExtra("patientAge", patientAge)
-            intent.putExtra("patientPhone", patientPhone)
-            intent.putExtra("patientCondition", patientCondition)
-            setResult(Activity.RESULT_OK, intent)
             finish()
         }
-
-
     }
 }
