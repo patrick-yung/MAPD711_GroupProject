@@ -15,9 +15,6 @@
             android:name=".AddPatientActivity"
             android:exported="false" />
         <activity
-            android:name=".AppointmentActivity"
-            android:exported="false" />
-        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <!--
