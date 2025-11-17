@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MAPD711_GroupProject">
         <activity
+            android:name=".PatientRepository"
+            android:exported="false" />
+        <activity
+            android:name=".PatientViewModel"
+            android:exported="false" />
+        <activity
+            android:name=".PatientDatabase"
+            android:exported="false" />
+        <activity
             android:name=".PatientModel"
             android:exported="false" />
         <activity
