@@ -11,6 +11,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.lang.System.console
+
+private var currentFragment = ""
 
 class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +35,7 @@ class HomeActivity : BaseActivity() {
         var lastPatientPhone = intent.getStringExtra("patientPhone")
         var lastPatientCondition = intent.getStringExtra("patientCondition")
 
-        var patientCount = 1258
+        var patientCount = 0
         fun addPatient() {
             patientCount++
         }
@@ -46,13 +49,9 @@ class HomeActivity : BaseActivity() {
         var criticalBtn = findViewById<Button>(R.id.button4)
         var clinicTestBtn = findViewById<Button>(R.id.button6)
         var appointmentBtn = findViewById<Button>(R.id.button7)
-        var patientsInfo = findViewById<TextView>(R.id.textView7)
         var fabAdd = findViewById<Button>(R.id.fabAdd)
-        var buttonEdit = findViewById<ImageButton>(R.id.buttonEdit)
 
         // initial state
-        buttonEdit.visibility = View.GONE
-        patientsInfo.text = "Patients: $patientCount"
 
         val addPatientLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -63,18 +62,7 @@ class HomeActivity : BaseActivity() {
                 lastPatientAge = data?.getStringExtra("patientAge")
                 lastPatientPhone = data?.getStringExtra("patientPhone")
                 lastPatientCondition = data?.getStringExtra("patientCondition")
-                if (lastPatientName != null) {
-                    patientsInfo.text = """
-                          Name: $lastPatientName
-                          Age: $lastPatientAge
-                          Phone: $lastPatientPhone
-                          Issues: $lastPatientCondition
-                          """.trimIndent()
-                    buttonEdit.visibility = View.VISIBLE
-                } else {
-                    patientsInfo.text = "No patient data available"
-                    buttonEdit.visibility = View.GONE
-                }
+
             }
         }
 
@@ -85,34 +73,23 @@ class HomeActivity : BaseActivity() {
         }
 
         // edit button reopens AddPatientActivity with existing info
-        buttonEdit.setOnClickListener {
-            if (lastPatientName != null) {
-                val intent = Intent(this, AddPatientActivity::class.java)
-                intent.putExtra("isEdit", true)
-                intent.putExtra("patientName", lastPatientName)
-                intent.putExtra("patientAge", lastPatientAge)
-                intent.putExtra("patientPhone", lastPatientPhone)
-                intent.putExtra("patientCondition", lastPatientCondition)
-                addPatientLauncher.launch(intent)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////// button logic
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+
+        patientsBtn.setOnClickListener {
+            if (currentFragment != "patients") {
+                currentFragment = "patients"
+                val viewPatientsFragment = ViewPatients()
+                fragmentTransaction.replace(R.id.fragment_container, viewPatientsFragment)
+                fragmentTransaction.commit()
             }
         }
 
-        // button logic
-        patientsBtn.setOnClickListener {
-            addPatient()
-            patientsInfo.text = "Patients: $patientCount"
-        }
 
-        criticalBtn.setOnClickListener {
-            patientsInfo.text = "Critical"
-        }
 
-        clinicTestBtn.setOnClickListener {
-            patientsInfo.text = "Clinic Test"
-        }
-
-        appointmentBtn.setOnClickListener {
-            patientsInfo.text = "Appointment"
-        }
     }
 }
