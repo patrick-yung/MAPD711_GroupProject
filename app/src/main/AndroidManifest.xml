@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MAPD711_GroupProject">
         <activity
+            android:name=".PatientModel"
+            android:exported="false" />
+        <activity
+            android:name=".PatientDao"
+            android:exported="false" />
+        <activity
             android:name=".AddPatientActivity"
             android:exported="false" />
         <activity
@@ -30,7 +36,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${apiKey}" />
+            android:value="AIzaSyDgm_1kea1ykva9a3OtFETmuk2nVnahhWs" />
 
         <activity
             android:name=".MapsActivity"
