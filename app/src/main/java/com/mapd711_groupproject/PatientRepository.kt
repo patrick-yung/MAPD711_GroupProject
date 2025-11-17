@@ -3,8 +3,8 @@ package com.mapd711_groupproject
 import android.content.Context
 import androidx.lifecycle.LiveData
 import kotlin.coroutines.CoroutineContext
-import com.example.roommvvmapp.StudentModel
-import com.example.roommvvmapp.StudentDatabase
+//import com.example.roommvvmapp.PatientModel
+//import com.example.roommvvmapp.PatientDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main

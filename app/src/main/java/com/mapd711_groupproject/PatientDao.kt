@@ -14,7 +14,7 @@ interface PatientDao {
 
     //defining an insert method using @Insert Annotation
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertStudent(patientModel: PatientModel)
+    fun insertPatient(patientModel: PatientModel)
 
     //defining a query method using @Query Annotation
     @Query("SELECT * FROM patient WHERE PatientName =:patientname")

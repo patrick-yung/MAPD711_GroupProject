@@ -26,5 +26,7 @@
     <string name="enter_health_condition">Enter Health Issues</string>
     <string name="saveBtn">Save</string>
     <string name="edit_patient">edit_icon</string>
+    <string name="enter_gender">Enter Gender</string>
+    <string name="enter_address">Enter Address</string>
 
 </resources>
