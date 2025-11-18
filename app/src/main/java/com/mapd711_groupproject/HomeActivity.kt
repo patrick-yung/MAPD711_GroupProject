@@ -116,9 +116,10 @@ class HomeActivity : AppCompatActivity() {
             patientsInfo.text = "Critical"
         }
 
-        //clinic test button will display text in patientsInfo
+        //clinic test button will go to clinical test activity
         clinicTestBtn.setOnClickListener {
-            patientsInfo.text = "Clinic Test"
+            val intent = Intent(this, ClinicalTestActivity::class.java)
+            startActivity(intent)
         }
 
        //click on appointment button it will go appointment activity
