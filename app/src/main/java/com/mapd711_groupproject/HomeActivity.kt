@@ -20,13 +20,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-data class Patient(
-    val name: String,
-    val age: Int,
-    val gender : String,
-    val history :  String,
-    val contact : String
-)
+
 
 class HomeActivity : BaseActivity() {
 
@@ -78,9 +72,27 @@ class HomeActivity : BaseActivity() {
 
         patientsBtn.setOnClickListener {
             if (currentFragment != "patients") {
-                currentFragment = "patients"
-//
+
+                // Keeping GlobalScope as you requested.
+                // The work inside will be to switch to the Main thread to update the UI.
+                GlobalScope.launch {
+                    // FIX #2: Switch to the Main thread before performing any UI operations.
+                    withContext(Dispatchers.Main) {
+                        // FIX #1: Create an instance of the ViewPatients fragment.
+                        val viewPatientsFragment = ViewPatients()
+
+                        Log.d("HomeActivity", "Button clicked, showing ViewPatients fragment.")
+
+                        // Now you can use the variable to show the fragment.
+                        // The fragment's own ViewModel will handle fetching the data.
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, viewPatientsFragment)
+                            .addToBackStack(null) // Allows the user to press 'back'
+                            .commit()
+                    }
+                }
             }
         }
+
     }
 }
