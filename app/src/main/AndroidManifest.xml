@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MAPD711_GroupProject">
         <activity
+            android:name=".AppointmentActivity"
+            android:exported="false" />
+        <activity
             android:name=".PatientRepository"
             android:exported="false" />
         <activity

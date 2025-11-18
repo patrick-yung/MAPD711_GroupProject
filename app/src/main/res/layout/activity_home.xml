@@ -185,7 +185,10 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonBar"
         app:layout_constraintBottom_toTopOf="@+id/fabAdd">
 
-    </androidx.cardview.widget.CardView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:fillViewport="true">
 
     <RelativeLayout
         android:layout_width="388dp"
@@ -220,6 +223,6 @@
             android:src="@drawable/edit_icon"
             android:visibility="gone" />
     </RelativeLayout>
-
-
+    </ScrollView>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

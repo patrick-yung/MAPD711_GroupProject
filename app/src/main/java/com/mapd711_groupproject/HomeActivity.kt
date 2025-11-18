@@ -25,7 +25,9 @@ class HomeActivity : AppCompatActivity() {
         }
         var lastPatientName = intent.getStringExtra("patientName")
         var lastPatientAge = intent.getStringExtra("patientAge")
+        var lastPatientGender = intent.getStringExtra("patientGender")
         var lastPatientPhone = intent.getStringExtra("patientPhone")
+        var lastPatientAddress = intent.getStringExtra("patientAddress")
         var lastPatientCondition = intent.getStringExtra("patientCondition")
 
 
@@ -60,12 +62,16 @@ class HomeActivity : AppCompatActivity() {
                 val data = result.data
                 lastPatientName = data?.getStringExtra("patientName")
                 lastPatientAge = data?.getStringExtra("patientAge")
+                lastPatientGender = data?.getStringExtra("patientGender")
                 lastPatientPhone = data?.getStringExtra("patientPhone")
+                lastPatientAddress = data?.getStringExtra("patientAddress")
                 lastPatientCondition = data?.getStringExtra("patientCondition")
                 if (lastPatientName != null) {
                     patientsInfo.text = """
                           Name: $lastPatientName
                           Age: $lastPatientAge
+                          Gender: $lastPatientGender
+                          Address: $lastPatientAddress
                           Phone: $lastPatientPhone
                           Issues: $lastPatientCondition
                           """.trimIndent()
@@ -90,7 +96,9 @@ class HomeActivity : AppCompatActivity() {
                 intent.putExtra("isEdit", true)
                 intent.putExtra("patientName", lastPatientName)
                 intent.putExtra("patientAge", lastPatientAge)
+                intent.putExtra("patientGender", lastPatientGender)
                 intent.putExtra("patientPhone", lastPatientPhone)
+                intent.putExtra("patientAddress", lastPatientAddress)
                 intent.putExtra("patientCondition", lastPatientCondition)
                 addPatientLauncher.launch(intent)
             }
@@ -113,11 +121,11 @@ class HomeActivity : AppCompatActivity() {
             patientsInfo.text = "Clinic Test"
         }
 
-       //appointment button will show text in patientsInfo
+       //click on appointment button it will go appointment activity
         appointmentBtn.setOnClickListener {
-            patientsInfo.text = "Appointment"
-
+            val intent = Intent(this, AppointmentActivity::class.java)
+            startActivity(intent)
         }
-
     }
+
 }
