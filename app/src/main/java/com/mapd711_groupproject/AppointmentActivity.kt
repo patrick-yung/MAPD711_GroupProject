@@ -1,5 +1,7 @@
 package com.mapd711_groupproject
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -24,8 +26,32 @@ class AppointmentActivity : AppCompatActivity() {
         var date = findViewById<EditText>(R.id.etDate)
         var time = findViewById<EditText>(R.id.etTime)
         var reason = findViewById<EditText>(R.id.etReason)
-
         var btnSave = findViewById<Button>(R.id.btnSave)
+
+        //date picker dialog
+        date.setOnClickListener {
+        val datePickerDialog = DatePickerDialog(this)
+        datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
+            val selectedDate = "$dayOfMonth/${month + 1}/$year"
+            date.setText(selectedDate)
+        }
+            datePickerDialog.show()
+        }
+
+        //time picker dialog to show the clock
+        time.setOnClickListener {
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, hourOfDay, minute ->
+                val amPm = if (hourOfDay >= 12) "PM" else "AM"
+                val hourIn12 = if (hourOfDay % 12 == 0) 12 else hourOfDay % 12
+                    val selectedTime = String.format("%02d:%02d %s", hourIn12, minute, amPm)
+                time.setText(selectedTime)
+            }, 0, 0, false)
+            timePickerDialog.show()
+        }
+
+
 
         //information will be save as shared preference
         var sharedPreferences = getSharedPreferences("appointment_info", MODE_PRIVATE)
