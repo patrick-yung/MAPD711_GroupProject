@@ -3,16 +3,29 @@ package com.mapd711_groupproject
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Log
 import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
+
+
+
 
 class HomeActivity : BaseActivity() {
+
+    private var currentFragment = "" // Moved inside the class to be a property
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,92 +40,59 @@ class HomeActivity : BaseActivity() {
             insets
         }
 
-        var lastPatientName = intent.getStringExtra("patientName")
-        var lastPatientAge = intent.getStringExtra("patientAge")
-        var lastPatientPhone = intent.getStringExtra("patientPhone")
-        var lastPatientCondition = intent.getStringExtra("patientCondition")
-
-        var patientCount = 1258
-        fun addPatient() {
-            patientCount++
-        }
-
-        var appointmentCount = 50
-        fun addAppointment() {
-            appointmentCount++
-        }
-
-        var patientsBtn = findViewById<Button>(R.id.button5)
-        var criticalBtn = findViewById<Button>(R.id.button4)
-        var clinicTestBtn = findViewById<Button>(R.id.button6)
-        var appointmentBtn = findViewById<Button>(R.id.button7)
-        var patientsInfo = findViewById<TextView>(R.id.textView7)
-        var fabAdd = findViewById<Button>(R.id.fabAdd)
-        var buttonEdit = findViewById<ImageButton>(R.id.buttonEdit)
-
-        // initial state
-        buttonEdit.visibility = View.GONE
-        patientsInfo.text = "Patients: $patientCount"
+        val patientsBtn = findViewById<Button>(R.id.button5)
+        val fabAdd = findViewById<Button>(R.id.fabAdd)
 
         val addPatientLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                lastPatientName = data?.getStringExtra("patientName")
-                lastPatientAge = data?.getStringExtra("patientAge")
-                lastPatientPhone = data?.getStringExtra("patientPhone")
-                lastPatientCondition = data?.getStringExtra("patientCondition")
-                if (lastPatientName != null) {
-                    patientsInfo.text = """
-                          Name: $lastPatientName
-                          Age: $lastPatientAge
-                          Phone: $lastPatientPhone
-                          Issues: $lastPatientCondition
-                          """.trimIndent()
-                    buttonEdit.visibility = View.VISIBLE
-                } else {
-                    patientsInfo.text = "No patient data available"
-                    buttonEdit.visibility = View.GONE
+                val data = result?.data
+                val lastPatientName = data?.getStringExtra("patientName")
+                val lastPatientAge = data?.getStringExtra("patientAge")
+                val lastPatientPhone = data?.getStringExtra("patientPhone")
+                val lastPatientCondition = data?.getStringExtra("patientCondition")
+
+                if (lastPatientName != null && lastPatientAge != null && lastPatientPhone != null && lastPatientCondition != null) {
+                    PatientService.uploadPatient(
+                        context = this,
+                        name = lastPatientName,
+                        age = lastPatientAge,
+                        phone = lastPatientPhone,
+                        condition = lastPatientCondition
+                    )
                 }
             }
         }
 
-        // fab button opens AddPatientActivity
         fabAdd.setOnClickListener {
             val intent = Intent(this, AddPatientActivity::class.java)
             addPatientLauncher.launch(intent)
         }
 
-        // edit button reopens AddPatientActivity with existing info
-        buttonEdit.setOnClickListener {
-            if (lastPatientName != null) {
-                val intent = Intent(this, AddPatientActivity::class.java)
-                intent.putExtra("isEdit", true)
-                intent.putExtra("patientName", lastPatientName)
-                intent.putExtra("patientAge", lastPatientAge)
-                intent.putExtra("patientPhone", lastPatientPhone)
-                intent.putExtra("patientCondition", lastPatientCondition)
-                addPatientLauncher.launch(intent)
+        patientsBtn.setOnClickListener {
+            if (currentFragment != "patients") {
+
+                // Keeping GlobalScope as you requested.
+                // The work inside will be to switch to the Main thread to update the UI.
+                GlobalScope.launch {
+                    // FIX #2: Switch to the Main thread before performing any UI operations.
+                    withContext(Dispatchers.Main) {
+                        // FIX #1: Create an instance of the ViewPatients fragment.
+                        val viewPatientsFragment = ViewPatients()
+
+                        Log.d("HomeActivity", "Button clicked, showing ViewPatients fragment.")
+
+                        // Now you can use the variable to show the fragment.
+                        // The fragment's own ViewModel will handle fetching the data.
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, viewPatientsFragment)
+                            .addToBackStack(null) // Allows the user to press 'back'
+                            .commit()
+                    }
+                }
             }
         }
 
-        // button logic
-        patientsBtn.setOnClickListener {
-            addPatient()
-            patientsInfo.text = "Patients: $patientCount"
-        }
-
-        criticalBtn.setOnClickListener {
-            patientsInfo.text = "Critical"
-        }
-
-        clinicTestBtn.setOnClickListener {
-            patientsInfo.text = "Clinic Test"
-        }
-
-        appointmentBtn.setOnClickListener {
-            patientsInfo.text = "Appointment"
-        }
     }
 }
