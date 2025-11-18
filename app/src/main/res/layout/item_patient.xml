@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:background="@color/light_gray"
+    android:layout_margin="8dp"
+    android:elevation="4dp">
+
+    <TextView
+        android:id="@+id/patientNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/patientAgeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age: " />
+
+    <TextView
+        android:id="@+id/patientGenderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender: " />
+
+    <TextView
+        android:id="@+id/patientPhoneText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone: " />
+
+    <TextView
+        android:id="@+id/patientAddressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address: " />
+
+    <TextView
+        android:id="@+id/patientConditionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Condition: " />
+
+</LinearLayout>

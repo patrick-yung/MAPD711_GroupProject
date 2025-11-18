@@ -20,6 +20,9 @@ interface PatientDao {
     @Query("SELECT * FROM patient WHERE PatientName =:patientname")
     fun getPatients(patientname: String?) : LiveData<PatientModel>
 
+    @Query("SELECT * FROM patient")
+    fun getAllPatients(): List<PatientModel>
+
 //    //delete patient
 //    @Query("DELETE FROM patient")
 //    fun deleteAllPatients()

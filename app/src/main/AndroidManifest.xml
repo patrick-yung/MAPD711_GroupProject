@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MAPD711_GroupProject">
         <activity
+            android:name=".PatientsListActivity"
+            android:exported="false" />
+        <activity
             android:name=".ClinicalTestActivity"
             android:exported="false" />
         <activity

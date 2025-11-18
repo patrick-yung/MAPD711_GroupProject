@@ -106,11 +106,10 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        //patients button will show
+        //patients button will go to the patients info activity
         patientsBtn.setOnClickListener {
-            addPatient()
-            patientsInfo.text = "Patients: $patientCount"
-
+            val intent = Intent(this, PatientsListActivity::class.java)
+            startActivity(intent)
         }
 
         //critical button will display text in patientsInfo
