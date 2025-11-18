@@ -112,9 +112,10 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //critical button will display text in patientsInfo
+        //critical button will go to critical activity
         criticalBtn.setOnClickListener {
-            patientsInfo.text = "Critical"
+            val intent = Intent(this, CriticalActivity::class.java)
+            startActivity(intent)
         }
 
         //clinic test button will go to clinical test activity
