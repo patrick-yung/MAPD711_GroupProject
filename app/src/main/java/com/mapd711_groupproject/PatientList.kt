@@ -1,36 +1,67 @@
 package com.mapd711_groupproject
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
-class PatientAdapter(private val patientList: List<Patient>) :
-    RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
+object PatientService {
 
-    // This class holds the views for a single list item (one row).
-    class PatientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.textViewPatientName)
-        val detailsTextView: TextView = itemView.findViewById(R.id.textViewPatientDetails)
-    }
+    fun uploadPatient(
+        context: Context,
+        name: String,
+        age: String,
+        phone: String,
+        condition: String
+    ) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val url = URL("https://mapd713-group-project.onrender.com/patients")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+                connection.doOutput = true
 
-    // Creates a new row's layout.
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PatientViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.patients_list_display, parent, false)
-        return PatientViewHolder(view)
-    }
+                // Create a valid JSON object
+                val patientJson = JSONObject().apply {
+                    put("name", name)
+                    put("age", age.toIntOrNull() ?: 0)
+                    put("gender", "Male") // Hardcoded for now
+                    put("contact", phone)
+                    put("history", condition)
+                }
+                val patientLoad = patientJson.toString()
 
-    // Populates a row with data from a specific patient.
-    override fun onBindViewHolder(holder: PatientViewHolder, position: Int) {
-        val patient = patientList[position]
-        holder.nameTextView.text = patient.name
-        holder.detailsTextView.text = "Age: ${patient.age}, Department: ${patient.department}"
-    }
+                OutputStreamWriter(connection.outputStream).use { writer ->
+                    writer.write(patientLoad)
+                    writer.flush()
+                }
 
-    // Returns the total number of items in the list.
-    override fun getItemCount(): Int {
-        return patientList.size
+                val responseCode = connection.responseCode
+                Log.d("Upload", "Response Code: $responseCode")
+
+                // Switch to Main thread to show Toast
+                withContext(Dispatchers.Main) {
+                    if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
+                        Toast.makeText(context, "Patient added successfully!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Upload failed with code: $responseCode", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("UploadError", "Error uploading patient", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 }
