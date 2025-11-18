@@ -19,4 +19,8 @@ interface PatientDao {
     //defining a query method using @Query Annotation
     @Query("SELECT * FROM patient WHERE PatientName =:patientname")
     fun getPatients(patientname: String?) : LiveData<PatientModel>
+
+//    //delete patient
+//    @Query("DELETE FROM patient")
+//    fun deleteAllPatients()
 }

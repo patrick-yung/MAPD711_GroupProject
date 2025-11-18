@@ -155,7 +155,6 @@
             android:textSize="8sp" />
     </LinearLayout>
 
-
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
