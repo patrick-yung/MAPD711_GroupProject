@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="select_test_type">
+        <item>Select test type</item>
+        <item>Heart Rate</item>
+        <item>Blood Pressure</item>
+        <item>Respiratory Rate</item>
+    </string-array>
+</resources>
