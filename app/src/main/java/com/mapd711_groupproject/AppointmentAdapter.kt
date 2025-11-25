@@ -11,8 +11,10 @@ class AppointmentAdapter(
 ) : RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder>() {
 
     class AppointmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textPatientName: TextView = itemView.findViewById(R.id.textViewAppointmentPatientName)
-        val textDetails: TextView = itemView.findViewById(R.id.textViewAppointmentDetails)
+        val textPatientName: TextView =
+            itemView.findViewById(R.id.textViewAppointmentPatientName)
+        val textDetails: TextView =
+            itemView.findViewById(R.id.textViewAppointmentDetails)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -23,15 +25,17 @@ class AppointmentAdapter(
 
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
         val item = items[position]
+        val ctx = holder.itemView.context
 
         holder.textPatientName.text = item.patientName
 
-        val details = "${holder.itemView.context.getString(R.string.doctor_label)}: ${item.doctorName}\n" +
-                "${holder.itemView.context.getString(R.string.date_label)}: ${item.appointmentDate}\n" +
-                "${holder.itemView.context.getString(R.string.reason_label)}: ${item.reason}\n" +
-                "${holder.itemView.context.getString(R.string.status_label)}: ${item.status}"
+        val detailsText =
+            "Doctor: ${item.doctorName}\n" +
+                    "Date: ${item.appointmentDate}\n" +
+                    "Reason: ${item.reason}\n" +
+                    "Status: ${item.status}"
 
-        holder.textDetails.text = details
+        holder.textDetails.text = detailsText
     }
 
     override fun getItemCount(): Int = items.size

@@ -4,22 +4,32 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:background="@drawable/appointment_item_bg"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/textViewAppointmentPatientName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/patient_name_label"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:text="Patient: John Doe"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/textViewAppointmentDetails"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="14sp"
-        android:text="Doctor, Date, Reason, Status" />
+        android:text="Details..."
+        android:textSize="15sp"
+        android:layout_marginTop="6dp"
+        android:textColor="#444444" />
+
+    <!-- ⭐ Thin separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginTop="12dp"/>
 
 </LinearLayout>

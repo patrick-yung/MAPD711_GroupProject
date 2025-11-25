@@ -22,6 +22,8 @@
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
+
+        <activity android:name=".AppointmentActivity" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -35,7 +37,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${apiKey}" />
+            android:value="AIzaSyC7-r-ZNZd-zt5OFcqq3TPFqBy-5_alPek" />
 
         <activity
             android:name=".MapsActivity"

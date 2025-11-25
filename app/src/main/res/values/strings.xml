@@ -33,18 +33,30 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!-- Appointment Screen Strings -->
-    <string name="appointments_title">All Appointments</string>
-    <string name="appointment_saved">Appointment saved to server</string>
-    <string name="appointment_save_error">Failed to save appointment</string>
-    <string name="appointments_empty">No appointments found</string>
-    <string name="appointments_loading_error">Error loading appointments</string>
-
-    <!-- Appointment List Labels -->
+    <!-- Appointments feature -->
+    <string name="appointment_patient_name_label">Patient Name</string>
     <string name="doctor_label">Doctor</string>
     <string name="date_label">Date</string>
     <string name="reason_label">Reason</string>
     <string name="status_label">Status</string>
+
+    <string name="appointments_title">All Appointments</string>
+    <string name="appointments_empty">No appointments found</string>
+    <string name="appointments_loading_error">Error loading appointments</string>
+    <string name="appointment_error">Error saving appointment</string>
+
+    <!-- Appointment Screen Strings -->
+    <string name="add_appointment">Add Appointment</string>
+    <string name="enter_patient_name">Enter Patient Name</string>
+    <string name="enter_doctor_name">Enter Doctor Name</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="enter_reason">Enter Reason</string>
+    <string name="fill_all_fields">Please fill all fields</string>
+    <string name="appointment_saved">Appointment saved successfully</string>
+    <string name="appointment_save_error">Error saving appointment</string>
+
+
 
 
 

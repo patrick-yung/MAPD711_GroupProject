@@ -3,102 +3,113 @@ package com.mapd711_groupproject
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 
 class AppointmentActivity : AppCompatActivity() {
+
+    private val POST_URL = "https://mapd713-group-project-2.onrender.com/appointments"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_appointment)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        var patientName = findViewById<EditText>(R.id.etName)
-        var date = findViewById<EditText>(R.id.etDate)
-        var time = findViewById<EditText>(R.id.etTime)
-        var reason = findViewById<EditText>(R.id.etReason)
-        var btnSave = findViewById<Button>(R.id.btnSave)
 
-        //date picker dialog
-        date.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(this)
-            datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
-                val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                date.setText(selectedDate)
+        val etName = findViewById<EditText>(R.id.etName)
+        val etDoctor = findViewById<EditText>(R.id.etDoctor)
+        val etDate = findViewById<EditText>(R.id.etDate)
+        val etTime = findViewById<EditText>(R.id.etTime)
+        val etReason = findViewById<EditText>(R.id.etReason)
+        val btnSave = findViewById<Button>(R.id.btnSave)
+
+        // DATE PICKER
+        etDate.setOnClickListener {
+            val picker = DatePickerDialog(this)
+            picker.setOnDateSetListener { _, year, month, day ->
+                etDate.setText("$day/${month + 1}/$year")
             }
-            datePickerDialog.show()
+            picker.show()
         }
 
-        //time picker dialog to show the clock
-        time.setOnClickListener {
-            val timePickerDialog = TimePickerDialog(
+        // TIME PICKER
+        etTime.setOnClickListener {
+            val picker = TimePickerDialog(
                 this,
-                { _, hourOfDay, minute ->
-                    val amPm = if (hourOfDay >= 12) "PM" else "AM"
-                    val hourIn12 = if (hourOfDay % 12 == 0) 12 else hourOfDay % 12
-                    val selectedTime = String.format("%02d:%02d %s", hourIn12, minute, amPm)
-                    time.setText(selectedTime)
-                }, 0, 0, false)
-            timePickerDialog.show()
+                { _, hour, minute ->
+                    val amPm = if (hour >= 12) "PM" else "AM"
+                    val hour12 = if (hour % 12 == 0) 12 else hour % 12
+                    etTime.setText(String.format("%02d:%02d %s", hour12, minute, amPm))
+                },
+                9, 0, false
+            )
+            picker.show()
         }
 
-
-
-        //information will be save as shared preference
-        var sharedPreferences = getSharedPreferences("appointment_info", MODE_PRIVATE)
-        var editor = sharedPreferences.edit()
-
-
-        //save button will save the appointment information and show a toast message
+        // SAVE BUTTON LOGIC
         btnSave.setOnClickListener {
-            //validation for patient name, date, time and reason cannot be empty
-            if (patientName.text.toString().isEmpty() || date.text.toString().isEmpty()
-                || time.text.toString().isEmpty() || reason.text.toString().isEmpty()
-            ) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            val name = etName.text.toString().trim()
+            val doctor = etDoctor.text.toString().trim()
+            val date = etDate.text.toString().trim()
+            val time = etTime.text.toString().trim()
+            val reason = etReason.text.toString().trim()
+
+            if (name.isEmpty() || doctor.isEmpty() || date.isEmpty() || time.isEmpty() || reason.isEmpty()) {
+                Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            editor.putString("patientName", patientName.text.toString())
-            editor.putString("date", date.text.toString())
-            editor.putString("time", time.text.toString())
-            editor.putString("reason", reason.text.toString())
-            editor.apply()
-            Toast.makeText(this, "Appointment saved", Toast.LENGTH_SHORT).show()
-            patientName.text.clear()
-            date.text.clear()
-            time.text.clear()
-            reason.text.clear()
-
-            var patientNameText = sharedPreferences.getString("patientName", "")
-            var dateText = sharedPreferences.getString("date", "")
-            var timeText = sharedPreferences.getString("time", "")
-            var reasonText = sharedPreferences.getString("reason", "")
-
-            // on click save button it will show the appointment information
-            findViewById<TextView>(R.id.tvPatientName).text = "Patient Name: $patientNameText"
-            findViewById<TextView>(R.id.tvDate).text = "Date: $dateText"
-            findViewById<TextView>(R.id.tvTime).text = "Time: $timeText"
-            findViewById<TextView>(R.id.tvReason).text = "Reason: $reasonText"
-
-            //visibility will be visible
-            findViewById<TextView>(R.id.tvPatientName).visibility = TextView.VISIBLE
-            findViewById<TextView>(R.id.tvDate).visibility = TextView.VISIBLE
-            findViewById<TextView>(R.id.tvTime).visibility = TextView.VISIBLE
-            findViewById<TextView>(R.id.tvReason).visibility = TextView.VISIBLE
-            //visibility will be gone
-            findViewById<TextView>(R.id.tvSavedAppointment).visibility = TextView.GONE
-
+            sendAppointmentToServer(name, doctor, date, time, reason)
         }
+    }
 
+    private fun sendAppointmentToServer(name: String, doctor: String, date: String, time: String, reason: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val url = URL(POST_URL)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/json")
+                conn.doOutput = true
+
+                val jsonBody = JSONObject().apply {
+                    put("patientName", name)
+                    put("doctorName", doctor)
+                    put("appointmentDate", "$date $time")
+                    put("reason", reason)
+                    put("status", "Scheduled")
+                }
+
+                val writer = OutputStreamWriter(conn.outputStream)
+                writer.write(jsonBody.toString())
+                writer.flush()
+
+                val code = conn.responseCode
+
+                withContext(Dispatchers.Main) {
+                    if (code in 200..299) {
+                        Toast.makeText(this@AppointmentActivity, "Appointment saved!", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@AppointmentActivity, "Error saving appointment.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("APPOINTMENT_ERROR", e.message ?: "unknown error")
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AppointmentActivity, "Error saving appointment.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
