@@ -1,6 +1,7 @@
 package com.mapd711_groupproject
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +22,10 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-
-
-class PatientAdapter(private val patientList: List<PatientService.Patient>) :
-    RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
+class PatientAdapter(
+    private val patientList: List<PatientService.Patient>,
+    private val context: Context
+) : RecyclerView.Adapter<PatientAdapter.PatientViewHolder>() {
 
     // This class holds the views for a single list item (one row).
     class PatientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,6 +45,15 @@ class PatientAdapter(private val patientList: List<PatientService.Patient>) :
         val patient = patientList[position]
         holder.nameTextView.text = patient.name
         holder.detailsTextView.text = "Age: ${patient.age}, Gender: ${patient.gender}"
+
+        // Add click listener to make items clickable
+        holder.itemView.setOnClickListener {
+            // Navigate to patient detail screen
+            val intent = Intent(context, PatientDetailActivity::class.java).apply {
+                putExtra("PATIENT_DATA", patient)
+            }
+            context.startActivity(intent)
+        }
     }
 
     // Returns the total number of items in the list.
@@ -52,15 +62,14 @@ class PatientAdapter(private val patientList: List<PatientService.Patient>) :
     }
 }
 
-
 object PatientService {
     data class Patient(
         val name: String,
         val age: Int,
-        val gender : String,
-        val history :  String,
-        val contact : String
-    )
+        val gender: String,
+        val history: String,
+        val contact: String
+    ) : java.io.Serializable
 
     fun uploadPatient(
         context: Context,
@@ -82,7 +91,7 @@ object PatientService {
                 val patientJson = JSONObject().apply {
                     put("name", name)
                     put("age", age.toIntOrNull() ?: 0)
-                    put("gender", gender) // Hardcoded for now
+                    put("gender", gender)
                     put("contact", phone)
                     put("history", condition)
                 }
@@ -113,6 +122,7 @@ object PatientService {
             }
         }
     }
+
     suspend fun fetchPatients(): List<Patient>? {
         return withContext(Dispatchers.IO) {
             try {
@@ -161,12 +171,7 @@ object PatientService {
             }
         }
     }
-//   suspend fun fetchPatient():List<Patient>?{
-//        return withContext(Dispatchers.IO) {
-//            val url = URL("https://mapd713-group-project.onrender.com/patients")
-//            val patientsList : List<Patient>
-//        }
-//    }
+
     fun URL.getString(): String? {
         val stream = openStream()
         return try {
@@ -177,31 +182,29 @@ object PatientService {
                 result.append(line).appendln()
             }
             result.toString()
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.toString()
         }
     }
 
-    fun parseJson(data:String):List<Patient>?{
+    fun parseJson(data: String): List<Patient>? {
         val list = mutableListOf<Patient>()
 
         try {
             val array = JSONObject(data).getJSONArray("students")
-            for(i in 0 until array.length()){
+            for (i in 0 until array.length()) {
                 val obj = JSONObject(array[i].toString())
                 val firstName = obj.getString("name")
                 val age = obj.getInt("age")
                 val gender = obj.getString("gender")
                 val contact = obj.getString("contact")
                 val history = obj.getString("history")
-                list.add(Patient(firstName,age,gender, contact,history))
+                list.add(Patient(firstName, age, gender, contact, history))
             }
-        }catch (e: JSONException){
+        } catch (e: JSONException) {
             Log.d("Exception", e.toString())
         }
 
         return list
     }
-
-
 }

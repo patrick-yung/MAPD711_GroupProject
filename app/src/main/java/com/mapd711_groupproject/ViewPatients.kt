@@ -66,8 +66,7 @@ class ViewPatients : Fragment() {
 
         viewModel.patientList.observe(viewLifecycleOwner) { patients ->
             Log.d("ViewPatients", "Patient list updated with ${patients.size} items.")
-            binding.patientsRecyclerView.adapter = PatientAdapter(patients)
-        }
+            binding.patientsRecyclerView.adapter = PatientAdapter(patients, requireContext())        }
     }
 
     private fun setupRecyclerView() {
