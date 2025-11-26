@@ -24,14 +24,13 @@ import java.net.URL
 
 class HomeActivity : BaseActivity() {
 
-    private var currentFragment = "" // Moved inside the class to be a property
+    private var currentFragment = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
-        // ✅ setup navigation drawer (hamburger)
         setupDrawer(R.id.nav_home)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -73,18 +72,11 @@ class HomeActivity : BaseActivity() {
         patientsBtn.setOnClickListener {
             if (currentFragment != "patients") {
 
-                // Keeping GlobalScope as you requested.
-                // The work inside will be to switch to the Main thread to update the UI.
                 GlobalScope.launch {
-                    // FIX #2: Switch to the Main thread before performing any UI operations.
                     withContext(Dispatchers.Main) {
-                        // FIX #1: Create an instance of the ViewPatients fragment.
                         val viewPatientsFragment = ViewPatients()
 
                         Log.d("HomeActivity", "Button clicked, showing ViewPatients fragment.")
-
-                        // Now you can use the variable to show the fragment.
-                        // The fragment's own ViewModel will handle fetching the data.
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, viewPatientsFragment)
                             .addToBackStack(null) // Allows the user to press 'back'
