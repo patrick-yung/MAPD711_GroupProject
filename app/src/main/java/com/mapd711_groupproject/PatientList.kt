@@ -67,6 +67,7 @@ object PatientService {
         name: String,
         age: String,
         phone: String,
+        gender: String,
         condition: String
     ) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -81,7 +82,7 @@ object PatientService {
                 val patientJson = JSONObject().apply {
                     put("name", name)
                     put("age", age.toIntOrNull() ?: 0)
-                    put("gender", "Male") // Hardcoded for now
+                    put("gender", gender) // Hardcoded for now
                     put("contact", phone)
                     put("history", condition)
                 }

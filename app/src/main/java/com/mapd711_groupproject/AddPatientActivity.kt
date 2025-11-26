@@ -32,6 +32,7 @@ class AddPatientActivity : BaseActivity() {
         val age = findViewById<EditText>(R.id.editTextAge)
         val phone = findViewById<EditText>(R.id.editTextPhone)
         val condition = findViewById<EditText>(R.id.editTextCondition)
+        val gender = findViewById<EditText>(R.id.editTextGender)
         val saveButton = findViewById<Button>(R.id.button2) // Make sure R.id.button2 is your Save button
 
         // Handles if the activity was started in "edit mode"
@@ -41,6 +42,7 @@ class AddPatientActivity : BaseActivity() {
             name.setText(intent.getStringExtra("patientName"))
             age.setText(intent.getStringExtra("patientAge"))
             phone.setText(intent.getStringExtra("patientPhone"))
+            gender.setText(intent.getStringExtra("patientGender"))
             condition.setText(intent.getStringExtra("patientCondition"))
         }
 
@@ -48,11 +50,12 @@ class AddPatientActivity : BaseActivity() {
         saveButton.setOnClickListener {
             val nameText = name.text.toString().trim()
             val ageText = age.text.toString().trim()
+            val genderText = gender.text.toString().trim()
             val phoneText = phone.text.toString().trim()
             val conditionText = condition.text.toString().trim()
 
             // --- Validation ---
-            if (nameText.isEmpty() || ageText.isEmpty() || phoneText.isEmpty() || conditionText.isEmpty()) {
+            if (nameText.isEmpty() || ageText.isEmpty() || phoneText.isEmpty() || conditionText.isEmpty() || genderText.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener // Stop if any field is empty
             }
@@ -70,6 +73,7 @@ class AddPatientActivity : BaseActivity() {
                 putExtra("patientName", nameText)
                 putExtra("patientAge", ageText)
                 putExtra("patientPhone", phoneText)
+                putExtra("patientGender", genderText)
                 putExtra("patientCondition", conditionText)
             }
 
