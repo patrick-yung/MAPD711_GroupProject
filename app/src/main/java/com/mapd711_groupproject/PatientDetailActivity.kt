@@ -16,17 +16,17 @@ class PatientDetailActivity : AppCompatActivity() {
         patient?.let {
             // Initialize views
             val nameTextView: TextView = findViewById(R.id.textViewPatientName)
-            val ageTextView: TextView = findViewById(R.id.textViewAge)
-            val genderTextView: TextView = findViewById(R.id.textViewGender)
-            val contactTextView: TextView = findViewById(R.id.textViewContact)
-            val historyTextView: TextView = findViewById(R.id.textViewHistory)
+            val ageTextView: TextView = findViewById(R.id.editTextAge)
+            val genderTextView: TextView = findViewById(R.id.editTextGender)
+            val contactTextView: TextView = findViewById(R.id.editTextContact)
+            val historyTextView: TextView = findViewById(R.id.editTextHistory)
 
             // Set patient data
             nameTextView.text = it.name
-            ageTextView.text = "Age: ${it.age}"
-            genderTextView.text = "Gender: ${it.gender}"
-            contactTextView.text = "Contact: ${it.contact}"
-            historyTextView.text = "Medical History: ${it.history}"
+            ageTextView.text = "${it.age}"
+            genderTextView.text = "${it.gender}"
+            contactTextView.text = "${it.contact}"
+            historyTextView.text = "${it.history}"
         }
     }
 }
