@@ -54,18 +54,17 @@ class HomeActivity : BaseActivity() {
                 val lastPatientAge = data?.getStringExtra("patientAge")
                 val lastPatientPhone = data?.getStringExtra("patientPhone")
                 val lastPatientCondition = data?.getStringExtra("patientCondition")
+                val lastPatientGender = data?.getStringExtra("patientGender")
 
-                if (lastPatientName != null &&
-                    lastPatientAge != null &&
-                    lastPatientPhone != null &&
-                    lastPatientCondition != null
-                ) {
+
+                if (lastPatientName != null && lastPatientAge != null && lastPatientPhone != null && lastPatientCondition != null && lastPatientGender != null) {
                     PatientService.uploadPatient(
                         context = this,
                         name = lastPatientName,
                         age = lastPatientAge,
                         phone = lastPatientPhone,
-                        condition = lastPatientCondition
+                        condition = lastPatientCondition,
+                        gender = lastPatientGender,
                     )
                 }
             }
@@ -87,12 +86,12 @@ class HomeActivity : BaseActivity() {
         // 🔹 View Patients Button
         patientsBtn.setOnClickListener {
             if (currentFragment != "patients") {
+
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
                         val viewPatientsFragment = ViewPatients()
 
-                        Log.d("HomeActivity", "Showing ViewPatients fragment.")
-
+                        Log.d("HomeActivity", "Button clicked, showing ViewPatients fragment.")
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, viewPatientsFragment)
                             .addToBackStack(null)

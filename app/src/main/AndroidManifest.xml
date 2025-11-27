@@ -17,6 +17,9 @@
         android:theme="@style/Theme.MAPD711_GroupProject"
         tools:replace="android:label">
         <activity
+            android:name=".PatientDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddPatientActivity"
             android:exported="false" />
         <activity
