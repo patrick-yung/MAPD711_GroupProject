@@ -68,7 +68,8 @@ object PatientService {
         val age: Int,
         val gender: String,
         val history: String,
-        val contact: String
+        val contact: String,
+        val _id: String
     ) : java.io.Serializable
 
     fun uploadPatient(
@@ -152,7 +153,8 @@ object PatientService {
                             age = patientObj.getInt("age"),
                             gender = patientObj.getString("gender"),
                             history = patientObj.getString("history"),
-                            contact = patientObj.getString("contact")
+                            contact = patientObj.getString("contact"),
+                            _id = patientObj.getString("_id")
                         )
                         patientsList.add(patient)
                     }
@@ -172,39 +174,6 @@ object PatientService {
         }
     }
 
-    fun URL.getString(): String? {
-        val stream = openStream()
-        return try {
-            val r = BufferedReader(InputStreamReader(stream))
-            val result = StringBuilder()
-            var line: String?
-            while (r.readLine().also { line = it } != null) {
-                result.append(line).appendln()
-            }
-            result.toString()
-        } catch (e: IOException) {
-            e.toString()
-        }
-    }
 
-    fun parseJson(data: String): List<Patient>? {
-        val list = mutableListOf<Patient>()
 
-        try {
-            val array = JSONObject(data).getJSONArray("students")
-            for (i in 0 until array.length()) {
-                val obj = JSONObject(array[i].toString())
-                val firstName = obj.getString("name")
-                val age = obj.getInt("age")
-                val gender = obj.getString("gender")
-                val contact = obj.getString("contact")
-                val history = obj.getString("history")
-                list.add(Patient(firstName, age, gender, contact, history))
-            }
-        } catch (e: JSONException) {
-            Log.d("Exception", e.toString())
-        }
-
-        return list
-    }
 }
