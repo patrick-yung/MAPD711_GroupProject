@@ -18,7 +18,43 @@ import java.net.URL
 
 class PatientDetailActivity : AppCompatActivity() {
 
+    fun deletePatient(
+        context: Context,
+        patientId: String
+    ) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val url = URL("https://mapd713-group-project.onrender.com/patients/$patientId")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "DELETE" // Fixed: Changed from "DEL" to "DELETE"
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+                connection.doOutput = false // DELETE requests typically don't have a body
 
+                val responseCode = connection.responseCode
+                Log.d("Delete", "Response Code: $responseCode")
+
+                // Switch to Main thread to show Toast
+                withContext(Dispatchers.Main) {
+                    if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NO_CONTENT) {
+                        Toast.makeText(context, "Patient deleted successfully!", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Delete failed with code: $responseCode",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("DeleteError", "Error deleting patient", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     fun updatePatient(
         context: Context,
         patientId: String,
@@ -76,9 +112,18 @@ class PatientDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_patient_detail)
+        var patientID = ""
+
         val buttonCancel = findViewById<TextView>(R.id.buttonCancel)
         buttonCancel.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+        }
+
+        val delateButton: TextView = findViewById(R.id.buttonDelete)
+        delateButton.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            deletePatient(this, patientID)
             startActivity(intent)
         }
 
@@ -90,7 +135,6 @@ class PatientDetailActivity : AppCompatActivity() {
         val genderTextView: TextView = findViewById(R.id.editTextGender)
         val contactTextView: TextView = findViewById(R.id.editTextContact)
         val historyTextView: TextView = findViewById(R.id.editTextHistory)
-        var patientID = ""
         patient?.let {
             // Set patient data
             nameTextView.text = it.name
@@ -99,7 +143,6 @@ class PatientDetailActivity : AppCompatActivity() {
             contactTextView.text = "${it.contact}"
             historyTextView.text = "${it.history}"
             patientID= it._id.toString()
-
         }
 
 
@@ -110,8 +153,9 @@ class PatientDetailActivity : AppCompatActivity() {
             val gender = genderTextView.text.toString()
             val contact = contactTextView.text.toString()
             val history = historyTextView.text.toString()
-
             updatePatient(this, patientID, name, age, gender, contact, history)        }
         }
+
+
 
 }
