@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="16dp"
+    tools:context=".ViewClinicalTest">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clinical Test Entry"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <ScrollView
+        android:id="@+id/scrollForm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textViewSelectPatientLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Patient:"
+                android:textSize="14sp"/>
+
+            <Spinner
+                android:id="@+id/spinnerPatientSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:spinnerMode="dropdown" />
+
+            <TextView
+                android:id="@+id/textViewPatientNameDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Patient: Not Selected"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp" />
+
+
+            <Spinner
+                android:id="@+id/spinnerTestType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:id="@+id/testDate"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:text="Select date"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:focusable="false"/>
+
+
+            <LinearLayout
+                android:id="@+id/groupHeart"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="12dp">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heart Rate (bpm)"/>
+                <EditText
+                    android:id="@+id/etHeartRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 72"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/groupBP"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="12dp">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blood Pressure (mmHg)"/>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp">
+                    <EditText
+                        android:id="@+id/etSystolic"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:hint="Systolic"
+                        android:inputType="number"/>
+                    <EditText
+                        android:id="@+id/etDiastolic"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:hint="Diastolic"
+                        android:inputType="number"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/etBPpulse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Pulse (optional)"
+                    android:inputType="number"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/groupResp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="12dp">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Respiratory Rate (breaths/min)"/>
+                <EditText
+                    android:id="@+id/etRespRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 16"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etNotes"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="Notes (optional)"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:layout_marginTop="12dp"/>
+
+            <Button
+                android:id="@+id/btnSaveTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Test"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/tvSavedTests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No tests saved yet"
+                android:layout_marginTop="14dp"
+                android:visibility="gone"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

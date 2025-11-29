@@ -41,6 +41,11 @@ class HomeActivity : BaseActivity() {
         val fabAddPatient = findViewById<Button>(R.id.fabAdd)
         val fabAddAppointment = findViewById<ExtendedFloatingActionButton>(R.id.fabAddAppointment)
         val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
+        val clinicTestBtn = findViewById<Button>(R.id.button6)
+        val criticalBtn = findViewById<Button>(R.id.button4)
+
+
+
 
 
 
@@ -122,5 +127,43 @@ class HomeActivity : BaseActivity() {
                 }
             }
         }
+
+        // 🔹 View Clinical Tests Button
+        clinicTestBtn.setOnClickListener {
+            if (currentFragment != "clinicTests") {
+                val viewClinicTestsFragment = ViewClinicalTest()
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, viewClinicTestsFragment)
+                    .addToBackStack(null)
+                    .commit()
+                currentFragment = "clinicTests"
+                Log.d("HomeActivity", "Transferred to Clinical Test Fragment")
+            }
+        }
+
+//        // 🔹 View Critical Patients Button
+//        criticalBtn.setOnClickListener {
+//            if (currentFragment != "criticalPatients") {
+//
+//                GlobalScope.launch {
+//                    withContext(Dispatchers.Main) {
+//                        val viewCriticalPatientsFragment = ViewCriticalPatients()
+//
+//                        Log.d("HomeActivity", "Showing ViewCriticalPatients fragment.")
+//
+//                        supportFragmentManager.beginTransaction()
+//                            .replace(R.id.fragment_container, viewCriticalPatientsFragment)
+//                            .addToBackStack(null)
+//                            .commit()
+//
+//                        currentFragment = "criticalPatients"
+//                    }
+//               }
+//           }
+//
+//        }
+
+
     }
 }
