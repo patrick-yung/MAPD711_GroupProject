@@ -130,14 +130,15 @@ class HomeActivity : BaseActivity() {
 
         // 🔹 View Clinical Tests Button
         clinicTestBtn.setOnClickListener {
-            val formFragment = ViewClinicalTest()
-
+            // Open the Dropdown Screen
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, formFragment)
+                .replace(R.id.fragment_container, PatientSelectFragment())
                 .addToBackStack(null)
                 .commit()
 
-            currentFragment = "clinicTests"
+            // Optional: Hide home FABs
+            fabAdd.hide()
+            fabAddAppointment.hide()
         }
 
 //        // 🔹 View Critical Patients Button
