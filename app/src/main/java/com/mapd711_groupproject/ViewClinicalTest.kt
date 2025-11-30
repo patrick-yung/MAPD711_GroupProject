@@ -30,17 +30,21 @@ class ViewClinicalTest : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_view_clinical_test, container, false)
 
-        // 1. Find UI Elements
-        val patientNameDisplay = view.findViewById<TextView>(R.id.textViewPatientNameDisplay)
+        val containerForm = view.findViewById<View>(R.id.containerForm)
+        val containerResult = view.findViewById<View>(R.id.containerResult)
+
+//        val patientNameDisplay = view.findViewById<TextView>(R.id.textViewPatientNameDisplay)
         val spinnerPatientSelect = view.findViewById<Spinner>(R.id.spinnerPatientSelect)
         val btnSaveTest = view.findViewById<Button>(R.id.btnSaveTest)
         val testDateEditText = view.findViewById<EditText>(R.id.testDate)
         val etNotes = view.findViewById<EditText>(R.id.etNotes)
+        val tvReceiptDetails = view.findViewById<TextView>(R.id.tvReceiptDetails)
+        val btnClose = view.findViewById<Button>(R.id.btnClose)
 
         // Initialize the class property
         spinnerTestType = view.findViewById(R.id.spinnerTestType)
 
-        // 2. FETCH PATIENTS
+        //FETCH PATIENTS
         GlobalScope.launch {
             val patients = ClinicalPatientService.fetchPatientNamesAndIds()
 
@@ -50,25 +54,34 @@ class ViewClinicalTest : Fragment() {
                     // Map the names for the spinner
                     names.addAll(patients.map { it.name })
 
-                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, names)
+                    val adapter =
+                        ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, names)
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerPatientSelect.adapter = adapter
 
-                    spinnerPatientSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, v: View?, pos: Int, id: Long) {
-                            if (pos > 0) {
-                                selectedPatient = patients[pos - 1]
-                                patientNameDisplay.text = "ID: ${selectedPatient!!._id}"
-                            } else {
-                                selectedPatient = null
-                                patientNameDisplay.text = "Patient: Not Selected"
+                    spinnerPatientSelect.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>,
+                                v: View?,
+                                pos: Int,
+                                id: Long
+                            ) {
+                                if (pos > 0) {
+                                    selectedPatient = patients[pos - 1]
+                                    // patientNameDisplay.text = "Selected: ${selectedPatient!!.name}"
+                                } else {
+                                    selectedPatient = null
+                                    // patientNameDisplay.text = "Patient: Not Selected"
+                                }
                             }
+
+                            override fun onNothingSelected(parent: AdapterView<*>) {}
                         }
-                        override fun onNothingSelected(parent: AdapterView<*>) {}
-                    }
-                } else {
-                    patientNameDisplay.text = "No patients found"
                 }
+//                } else {
+//                    patientNameDisplay.text = "No patients found"
+//                }
             }
         }
         //Setup Test Type Spinner
@@ -112,7 +125,7 @@ class ViewClinicalTest : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // 6. SAVE BUTTON (The Critical Part)
+        // SAVE BUTTON
         btnSaveTest.setOnClickListener {
             if (selectedPatient == null) {
                 Toast.makeText(requireContext(), "Please select a patient", Toast.LENGTH_SHORT)
@@ -155,21 +168,32 @@ class ViewClinicalTest : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     if (response != null) {
-                        // SUCCESS
-                        Toast.makeText(requireContext(), "Saved Successfully", Toast.LENGTH_SHORT)
-                            .show()
-                        parentFragmentManager.popBackStack()
+                        containerForm.visibility = View.GONE
+                        containerResult.visibility = View.VISIBLE
+
+                        // 3. Fill the Receipt Text
+                        val status = if (response.flagged) "CRITICAL ⚠️" else "Normal ✅"
+                        tvReceiptDetails.text = """
+                            Patient: ${selectedPatient!!.name}
+                            Type: ${response.type.uppercase()}
+                            Result: ${response.value}
+                            Status: $status
+                            Date: ${response.measuredDateTime}
+                        """.trimIndent()
+
                     } else {
-                        // Stay on this screen so the user can try again
-                        Toast.makeText(
-                            requireContext(),
-                            "Save failed. Try again.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), "Save failed", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-       return view
+
+        // 4. CLOSE BUTTON
+        btnClose.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        return view
     }
 }
+

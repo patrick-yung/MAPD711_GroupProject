@@ -130,10 +130,10 @@ class HomeActivity : BaseActivity() {
 
         // 🔹 View Clinical Tests Button
         clinicTestBtn.setOnClickListener {
-            val listFragment = ClinicalListFragment()
+            val formFragment = ViewClinicalTest()
 
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, listFragment)
+                .replace(R.id.fragment_container, formFragment)
                 .addToBackStack(null)
                 .commit()
 

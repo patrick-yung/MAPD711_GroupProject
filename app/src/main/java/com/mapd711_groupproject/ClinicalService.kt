@@ -12,60 +12,42 @@ import java.net.URL
 
 object ClinicalService {
 
-    private const val CLINICAL_URL = "https://mapd713-group-project.onrender.com/clinicalData"
+    private const val CLINICAL_URL = "https://mapd713-group-project.onrender.com/clinicaldata"
 
-    suspend fun uploadTest(context: Context, request: ClinicalTestRequest): ClinicalTestResponse? {
+    // Fetch tests ONLY for a specific patient ID
+    suspend fun fetchTestsByPatientId(patientId: String): List<ClinicalTestResponse> {
         return withContext(Dispatchers.IO) {
+            val list = mutableListOf<ClinicalTestResponse>()
             try {
-                // Setup
-                val url = URL(CLINICAL_URL)
+                // Your backend endpoint: /clinicaldata/patients/:patientId
+                val urlString =
+                    "https://mapd713-group-project.onrender.com/clinicaldata/patients/$patientId"
+                val url = URL(urlString)
                 val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "POST"
-                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
-                connection.doOutput = true
+                connection.requestMethod = "GET"
 
-                // JSON Body
-                val jsonParam = JSONObject()
-                jsonParam.put("patientId", request.patientId)
-                jsonParam.put("type", request.type)
-                jsonParam.put("value", request.value)
-
-                // Send
-                val outputStream = OutputStreamWriter(connection.outputStream)
-                outputStream.write(jsonParam.toString())
-                outputStream.flush()
-                outputStream.close()
-
-                // Response
-                val responseCode = connection.responseCode
-                if (responseCode == 201 || responseCode == 200) {
+                if (connection.responseCode == 200) {
                     val responseText = connection.inputStream.bufferedReader().use { it.readText() }
-                    val jsonResponse = JSONObject(responseText)
-                    Log.d("ClinicalService", "Response: $jsonResponse")
+                    val jsonArray = org.json.JSONArray(responseText)
 
-                    val responseObj = ClinicalTestResponse(
-                        _id = jsonResponse.optString("_id"),
-                        patientId = jsonResponse.optString("patientId"),
-                        type = jsonResponse.optString("type"),
-                        value = jsonResponse.optString("value"),
-                        flagged = jsonResponse.optBoolean("flagged"),
-                        measuredDateTime = jsonResponse.optString("measuredDateTime")
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "✅ Saved Successfully", Toast.LENGTH_SHORT).show()
+                    for (i in 0 until jsonArray.length()) {
+                        val obj = jsonArray.getJSONObject(i)
+                        list.add(
+                            ClinicalTestResponse(
+                                _id = obj.optString("_id"),
+                                patientId = obj.optString("patientId"),
+                                type = obj.optString("type"),
+                                value = obj.optString("value"),
+                                flagged = obj.optBoolean("flagged"),
+                                measuredDateTime = obj.optString("measuredDateTime")
+                            )
+                        )
                     }
-
-                    return@withContext responseObj
-                } else {
-                    Log.e("ClinicalService", "Server Error: $responseCode")
-                    return@withContext null
                 }
-
             } catch (e: Exception) {
-                Log.e("ClinicalService", "Exception: ${e.message}")
-                return@withContext null
+                Log.e("ClinicalService", "Error: ${e.message}")
             }
+            return@withContext list
         }
     }
 }

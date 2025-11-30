@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="16dp"
     tools:context=".ViewClinicalTest">
 
@@ -16,34 +17,36 @@
         android:text="Clinical Test Entry"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:id="@+id/btnSaveTest"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@android:color/holo_purple"
-        android:text="Save Test"
+        android:layout_height="60dp"
+        android:text="SAVE DATA"
+        android:textStyle="bold"
+        android:backgroundTint="#673AB7"
         android:textColor="@android:color/white"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollForm"
+        android:id="@+id/containerForm"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:fillViewport="true"
+        android:fadeScrollbars="false"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"
         app:layout_constraintBottom_toTopOf="@id/btnSaveTest"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:orientation="vertical"
@@ -51,132 +54,151 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textViewSelectPatientLabel"
+                android:text="Select Patient"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Patient:"
-                android:textSize="14sp"/>
+                android:layout_height="wrap_content"/>
 
             <Spinner
                 android:id="@+id/spinnerPatientSelect"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
                 android:layout_marginTop="4dp"
-                android:spinnerMode="dropdown" />
+                android:layout_marginBottom="16dp"/>
 
             <TextView
-                android:id="@+id/textViewPatientNameDisplay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Patient: Not Selected"
-                android:textSize="16sp"
+                android:text="Test Type"
                 android:textStyle="bold"
-                android:paddingBottom="8dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <Spinner
                 android:id="@+id/spinnerTestType"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:spinnerMode="dropdown" />
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:text="Date"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <EditText
                 android:id="@+id/testDate"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:gravity="center_vertical"
-                android:text="Select date"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="12dp"
+                android:layout_height="50dp"
+                android:background="@android:drawable/edit_text"
+                android:paddingStart="12dp"
                 android:clickable="true"
-                android:focusable="false"/>
+                android:focusable="false"
+                android:hint="Select Date"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"/>
 
             <LinearLayout
                 android:id="@+id/groupHeart"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginTop="12dp">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heart Rate (bpm)"/>
-                <EditText
-                    android:id="@+id/etHeartRate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="e.g. 72"
-                    android:inputType="number"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView android:text="Heart Rate (BPM)" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <EditText android:id="@+id/etHeartRate" android:background="@android:drawable/edit_text" android:padding="12dp" android:inputType="number" android:layout_width="match_parent" android:layout_height="50dp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/groupBP"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginTop="12dp">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blood Pressure (mmHg)"/>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp">
-                    <EditText
-                        android:id="@+id/etSystolic"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:hint="Systolic"
-                        android:inputType="number"/>
-                    <EditText
-                        android:id="@+id/etDiastolic"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:hint="Diastolic"
-                        android:inputType="number"
-                        android:layout_marginStart="8dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView android:text="Blood Pressure (mmHg)" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <EditText android:id="@+id/etSystolic" android:hint="Sys" android:background="@android:drawable/edit_text" android:padding="12dp" android:inputType="number" android:layout_weight="1" android:layout_width="0dp" android:layout_height="50dp"/>
+                    <View android:layout_width="16dp" android:layout_height="match_parent"/>
+                    <EditText android:id="@+id/etDiastolic" android:hint="Dia" android:background="@android:drawable/edit_text" android:padding="12dp" android:inputType="number" android:layout_weight="1" android:layout_width="0dp" android:layout_height="50dp"/>
                 </LinearLayout>
-
-                <EditText
-                    android:id="@+id/etBPpulse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Pulse (optional)"
-                    android:inputType="number"
-                    android:layout_marginTop="8dp"/>
+                <EditText android:id="@+id/etBPpulse" android:hint="Pulse (Optional)" android:layout_marginTop="8dp" android:background="@android:drawable/edit_text" android:padding="12dp" android:inputType="number" android:layout_width="match_parent" android:layout_height="50dp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/groupResp"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginTop="12dp">
-
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Respiratory Rate (breaths/min)"/>
-                <EditText
-                    android:id="@+id/etRespRate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="e.g. 16"
-                    android:inputType="number"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView android:text="Resp Rate" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <EditText android:id="@+id/etRespRate" android:background="@android:drawable/edit_text" android:padding="12dp" android:inputType="number" android:layout_width="match_parent" android:layout_height="50dp"/>
             </LinearLayout>
+
+            <TextView
+                android:text="Notes"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <EditText
                 android:id="@+id/etNotes"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:hint="Notes (optional)"
-                android:inputType="textMultiLine"
+                android:hint="Enter details..."
+                android:background="@android:drawable/edit_text"
+                android:padding="12dp"
                 android:gravity="top"
-                android:layout_marginTop="12dp"/>
-
-            <View
+                android:layout_marginTop="4dp"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="100dp"/>
+
+            <View android:layout_width="match_parent" android:layout_height="20dp"/>
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/containerResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center"
+        android:background="#E8F5E9"
+        android:padding="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@android:drawable/checkbox_on_background"
+            app:tint="#4CAF50"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Success!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#4CAF50"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tvReceiptDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Details..."
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back to Home"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
