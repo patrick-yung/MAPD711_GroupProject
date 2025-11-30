@@ -6,4 +6,5 @@
         <item>Blood Pressure</item>
         <item>Respiratory Rate</item>
     </string-array>
+    <string-array name="test_types">testType</string-array>
 </resources>

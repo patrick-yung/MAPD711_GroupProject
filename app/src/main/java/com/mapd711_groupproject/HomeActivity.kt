@@ -41,6 +41,11 @@ class HomeActivity : BaseActivity() {
         val fabAddPatient = findViewById<Button>(R.id.fabAdd)
         val fabAddAppointment = findViewById<ExtendedFloatingActionButton>(R.id.fabAddAppointment)
         val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
+        val clinicTestBtn = findViewById<Button>(R.id.button6)
+        val criticalBtn = findViewById<Button>(R.id.button4)
+
+
+
 
 
 
@@ -122,5 +127,25 @@ class HomeActivity : BaseActivity() {
                 }
             }
         }
+
+        // 🔹 View Clinical Tests Button
+        clinicTestBtn.setOnClickListener {
+            Log.d("HomeActivity", "Showing PatientSelectFragment.")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, PatientSelectFragment())
+                .addToBackStack(null)
+                .commit()
+
+            // Optional: Hide home FABs
+            fabAdd.hide()
+            fabAddAppointment.hide()
+        }
+
+    // 🔹 View Critical Patients Button
+    criticalBtn.setOnClickListener {
+        val intent = Intent(this, CriticalPatientsActivity::class.java)
+        startActivity(intent)
+    }
+
     }
 }
