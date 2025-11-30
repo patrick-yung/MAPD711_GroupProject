@@ -141,28 +141,11 @@ class HomeActivity : BaseActivity() {
             fabAddAppointment.hide()
         }
 
-//        // 🔹 View Critical Patients Button
-//        criticalBtn.setOnClickListener {
-//            if (currentFragment != "criticalPatients") {
-//
-//                GlobalScope.launch {
-//                    withContext(Dispatchers.Main) {
-//                        val viewCriticalPatientsFragment = ViewCriticalPatients()
-//
-//                        Log.d("HomeActivity", "Showing ViewCriticalPatients fragment.")
-//
-//                        supportFragmentManager.beginTransaction()
-//                            .replace(R.id.fragment_container, viewCriticalPatientsFragment)
-//                            .addToBackStack(null)
-//                            .commit()
-//
-//                        currentFragment = "criticalPatients"
-//                    }
-//               }
-//           }
-//
-//        }
-
+    // 🔹 View Critical Patients Button
+    criticalBtn.setOnClickListener {
+        val intent = Intent(this, CriticalPatientsActivity::class.java)
+        startActivity(intent)
+    }
 
     }
 }

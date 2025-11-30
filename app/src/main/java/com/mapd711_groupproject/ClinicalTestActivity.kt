@@ -144,7 +144,7 @@ class ClinicalTestActivity : AppCompatActivity() {
                     if (response != null) {
                         Toast.makeText(
                             this@ClinicalTestActivity,
-                            "Saved to Cloud!",
+                            "Saved successfully",
                             Toast.LENGTH_SHORT
                         ).show()
 

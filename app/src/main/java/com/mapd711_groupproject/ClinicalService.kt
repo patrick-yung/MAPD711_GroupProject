@@ -65,8 +65,9 @@ object ClinicalService {
         return withContext(Dispatchers.IO) {
             val list = mutableListOf<ClinicalTestResponse>()
             try {
-                // 1. Build the URL for the specific patient
-                val urlString = "https://mapd713-group-project.onrender.com/clinicaldata/patients/$patientId"
+                // Build the URL for the specific patient
+                val urlString =
+                    "https://mapd713-group-project.onrender.com/clinicaldata/patients/$patientId"
                 Log.d("ClinicalService", "Fetching history: $urlString")
 
                 val url = URL(urlString)
@@ -98,4 +99,46 @@ object ClinicalService {
         }
     }
 
+
+    // fetch by type
+    suspend fun fetchTestsByType(type: String): List<ClinicalTestResponse> {
+        return withContext(Dispatchers.IO) {
+            val list = mutableListOf<ClinicalTestResponse>()
+            try {
+                val urlString =
+                    "https://mapd713-group-project.onrender.com/clinicaldata/types/$type"
+
+                val url = URL(urlString)
+
+                Log.d("DEBUG_CRITICAL", "requesting url: ${url.toString()}")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+
+                if (connection.responseCode == 200) {
+                    val responseText = connection.inputStream.bufferedReader().use { it.readText() }
+                    val mainObj = JSONObject(responseText)
+                    val jsonArray = mainObj.optJSONArray("clinicalData")
+
+                    if (jsonArray != null) {
+                        for (i in 0 until jsonArray.length()) {
+                            val obj = jsonArray.getJSONObject(i)
+                            list.add(
+                                ClinicalTestResponse(
+                                    _id = obj.optString("_id"),
+                                    patientId = obj.optString("patientId"),
+                                    type = obj.optString("type"),
+                                    value = obj.optString("value"),
+                                    flagged = obj.optBoolean("flagged"),
+                                    measuredDateTime = obj.optString("measuredDateTime")
+                                )
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ClinicalService", "Error fetching type $type: ${e.message}")
+            }
+            return@withContext list
+        }
+    }
 }
