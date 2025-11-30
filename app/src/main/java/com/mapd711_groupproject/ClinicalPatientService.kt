@@ -13,9 +13,8 @@ data class ClinicalPatient(
 )
 
 object ClinicalPatientService {
-    private const val PATIENTS_URL = "https://mapd713-group-project-2.onrender.com/patients"
+    private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
 
-    // This function goes to the internet and gets the list WITH IDs
     suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
         return withContext(Dispatchers.IO) {
             try {

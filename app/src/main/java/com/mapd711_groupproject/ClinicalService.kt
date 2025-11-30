@@ -12,67 +12,59 @@ import java.net.URL
 
 object ClinicalService {
 
-    private const val CLINICAL_URL = "https://mapd713-group-project-2.onrender.com/clinicaldata"
+    private const val CLINICAL_URL = "https://mapd713-group-project.onrender.com/clinicalData"
 
-    // This function sends the data manually
-    suspend fun uploadTest(context: Context, request: ClinicalTestRequest) {
-        withContext(Dispatchers.IO) {
+    suspend fun uploadTest(context: Context, request: ClinicalTestRequest): ClinicalTestResponse? {
+        return withContext(Dispatchers.IO) {
             try {
-                Log.d("ClinicalService", "Uploading to: $CLINICAL_URL")
-
-                // Setup the Connection to the Server
+                // Setup
                 val url = URL(CLINICAL_URL)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
-                connection.setRequestProperty("Accept", "application/json")
                 connection.doOutput = true
 
-                // Manually Build the JSON
+                // JSON Body
                 val jsonParam = JSONObject()
                 jsonParam.put("patientId", request.patientId)
                 jsonParam.put("type", request.type)
                 jsonParam.put("value", request.value)
 
-                Log.d("ClinicalService", "Sending Data: $jsonParam")
-
-                //Send the Data
+                // Send
                 val outputStream = OutputStreamWriter(connection.outputStream)
                 outputStream.write(jsonParam.toString())
                 outputStream.flush()
                 outputStream.close()
 
-                //Check the Result
+                // Response
                 val responseCode = connection.responseCode
                 if (responseCode == 201 || responseCode == 200) {
-                    // Success!
-                    val response = connection.inputStream.bufferedReader().use { it.readText() }
-                    Log.d("ClinicalService", "Response: $response")
+                    val responseText = connection.inputStream.bufferedReader().use { it.readText() }
+                    val jsonResponse = JSONObject(responseText)
+                    Log.d("ClinicalService", "Response: $jsonResponse")
 
-                    // Check if critical (Backend returns "flagged": true/false)
-                    val jsonResponse = JSONObject(response)
-                    val isCritical = jsonResponse.optBoolean("flagged", false)
+                    val responseObj = ClinicalTestResponse(
+                        _id = jsonResponse.optString("_id"),
+                        patientId = jsonResponse.optString("patientId"),
+                        type = jsonResponse.optString("type"),
+                        value = jsonResponse.optString("value"),
+                        flagged = jsonResponse.optBoolean("flagged"),
+                        measuredDateTime = jsonResponse.optString("measuredDateTime")
+                    )
 
                     withContext(Dispatchers.Main) {
-                        if (isCritical) {
-                            Toast.makeText(context, "⚠️ CRITICAL ALERT SAVED!", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(context, "✅ Saved Successfully", Toast.LENGTH_SHORT).show()
-                        }
+                        Toast.makeText(context, "✅ Saved Successfully", Toast.LENGTH_SHORT).show()
                     }
+
+                    return@withContext responseObj
                 } else {
-                    // Failure
                     Log.e("ClinicalService", "Server Error: $responseCode")
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Server Error: $responseCode", Toast.LENGTH_SHORT).show()
-                    }
+                    return@withContext null
                 }
 
             } catch (e: Exception) {
-                Log.e("ClinicalService", "Exception: ${e.message}", e)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Network Error. Check internet.", Toast.LENGTH_SHORT).show()
-                }
+                Log.e("ClinicalService", "Exception: ${e.message}")
+                return@withContext null
             }
         }
     }

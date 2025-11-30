@@ -24,9 +24,6 @@ class ClinicalListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // We can reuse your partner's 'fragment_view_patients.xml' if it has a recycler view,
-        // OR we create a simple layout dynamically to avoid XML errors.
-        // For safety, let's use the layout I provide below.
         val view = inflater.inflate(R.layout.fragment_clinical_list, container, false)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerClinical)
@@ -35,7 +32,7 @@ class ClinicalListFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // 1. FETCH DATA (Manual/OkHttp Style)
+        // FETCH DATA
         GlobalScope.launch {
             val list = fetchAllTests()
             withContext(Dispatchers.Main) {
@@ -49,7 +46,7 @@ class ClinicalListFragment : Fragment() {
             }
         }
 
-        // 2. FAB CLICK -> Go to your 'ViewClinicalTest' (The Add Form)
+        // FAB CLICK
         fab.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ViewClinicalTest())
@@ -60,12 +57,12 @@ class ClinicalListFragment : Fragment() {
         return view
     }
 
-    // Manual Fetch Logic (Matches your partner's style)
+    // fetch all tests from the server
     private fun fetchAllTests(): List<ClinicalTestResponse> {
         val resultList = mutableListOf<ClinicalTestResponse>()
         try {
             // Use the endpoint we added in Step 1
-            val url = URL("https://mapd713-group-project-2.onrender.com/clinicaldata")
+            val url = URL("https://mapd713-group-project.onrender.com/clinicaldata")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
 

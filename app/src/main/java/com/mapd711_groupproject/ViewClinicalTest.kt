@@ -57,9 +57,7 @@ class ViewClinicalTest : Fragment() {
                     spinnerPatientSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(parent: AdapterView<*>, v: View?, pos: Int, id: Long) {
                             if (pos > 0) {
-                                // Match selection to your list
                                 selectedPatient = patients[pos - 1]
-                                // Now we have the ID safely stored in 'selectedPatient._id'
                                 patientNameDisplay.text = "ID: ${selectedPatient!!._id}"
                             } else {
                                 selectedPatient = null
@@ -117,16 +115,18 @@ class ViewClinicalTest : Fragment() {
         // 6. SAVE BUTTON (The Critical Part)
         btnSaveTest.setOnClickListener {
             if (selectedPatient == null) {
-                Toast.makeText(requireContext(), "Please select a patient", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please select a patient", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
             // Prepare Data
-            val type = spinnerTestType.selectedItem.toString().lowercase() // Backend wants lowercase
+            val type =
+                spinnerTestType.selectedItem.toString().lowercase() // Backend wants lowercase
             var value = ""
 
             if (type == "blood pressure") {
-                if(etSystolic.text.isEmpty() || etDiastolic.text.isEmpty()) {
+                if (etSystolic.text.isEmpty() || etDiastolic.text.isEmpty()) {
                     Toast.makeText(requireContext(), "Enter BP values", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
@@ -149,12 +149,27 @@ class ViewClinicalTest : Fragment() {
                 value = value
             )
 
-            // Send to Server using Manual Service
+            // Send to Server AND Navigate Back
             GlobalScope.launch {
-                ClinicalService.uploadTest(requireContext(), request)
+                val response = ClinicalService.uploadTest(requireContext(), request)
+
+                withContext(Dispatchers.Main) {
+                    if (response != null) {
+                        // SUCCESS
+                        Toast.makeText(requireContext(), "Saved Successfully", Toast.LENGTH_SHORT)
+                            .show()
+                        parentFragmentManager.popBackStack()
+                    } else {
+                        // Stay on this screen so the user can try again
+                        Toast.makeText(
+                            requireContext(),
+                            "Save failed. Try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
-
-        return view
+       return view
     }
 }
