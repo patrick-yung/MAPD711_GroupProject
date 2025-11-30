@@ -15,12 +15,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <Spinner
+        android:id="@+id/spinnerFilter"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:drawable/btn_dropdown"
+        app:layout_constraintTop_toBottomOf="@id/tvHistoryTitle"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <ListView
         android:id="@+id/listHistory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvHistoryTitle"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/spinnerFilter"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -31,7 +40,6 @@
         android:text="Add Test"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:gravity="center"
         app:icon="@null"
         app:backgroundTint="#2196F3"
         app:layout_constraintBottom_toBottomOf="parent"
