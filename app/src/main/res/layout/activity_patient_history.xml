@@ -23,12 +23,16 @@
         app:layout_constraintTop_toBottomOf="@id/tvHistoryTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAddTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_input_add"
         android:layout_margin="16dp"
+        android:text="Add Test"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:icon="@null"
         app:backgroundTint="#2196F3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

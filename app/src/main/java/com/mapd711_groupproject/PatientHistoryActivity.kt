@@ -6,7 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,9 +28,9 @@ class PatientHistoryActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tvHistoryTitle).text = "$patientName's History"
         listView = findViewById(R.id.listHistory)
-        val fab = findViewById<FloatingActionButton>(R.id.fabAddTest)
+        val fab = findViewById<ExtendedFloatingActionButton>(R.id.fabAddTest)
 
-        // FAB Click -> OPEN YOUR CLINICAL TEST ACTIVITY (The Form)
+        // open clinical test activity
         fab.setOnClickListener {
             val intent = Intent(this, ClinicalTestActivity::class.java)
             intent.putExtra("PATIENT_ID", patientId)
@@ -39,7 +39,7 @@ class PatientHistoryActivity : AppCompatActivity() {
         }
     }
 
-    // Refresh list when you come back from adding a test
+    // Refresh list when come back from adding a test
     override fun onResume() {
         super.onResume()
         loadHistory()

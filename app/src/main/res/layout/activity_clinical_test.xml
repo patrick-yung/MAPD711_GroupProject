@@ -82,7 +82,6 @@
                 android:spinnerMode="dropdown" />
 
             <!-- Inline DatePicker (no button) -->
-            <!-- compact date/time selector (replace your DatePicker) -->
             <EditText
                 android:id="@+id/testDate"
                 android:layout_width="match_parent"

@@ -130,7 +130,7 @@ class HomeActivity : BaseActivity() {
 
         // 🔹 View Clinical Tests Button
         clinicTestBtn.setOnClickListener {
-            // Open the Dropdown Screen
+            Log.d("HomeActivity", "Showing PatientSelectFragment.")
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, PatientSelectFragment())
                 .addToBackStack(null)
