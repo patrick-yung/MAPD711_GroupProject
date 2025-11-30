@@ -130,16 +130,14 @@ class HomeActivity : BaseActivity() {
 
         // 🔹 View Clinical Tests Button
         clinicTestBtn.setOnClickListener {
-            if (currentFragment != "clinicTests") {
-                val viewClinicTestsFragment = ViewClinicalTest()
+            val listFragment = ClinicalListFragment()
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, viewClinicTestsFragment)
-                    .addToBackStack(null)
-                    .commit()
-                currentFragment = "clinicTests"
-                Log.d("HomeActivity", "Transferred to Clinical Test Fragment")
-            }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, listFragment)
+                .addToBackStack(null)
+                .commit()
+
+            currentFragment = "clinicTests"
         }
 
 //        // 🔹 View Critical Patients Button

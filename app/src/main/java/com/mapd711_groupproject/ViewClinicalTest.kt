@@ -69,7 +69,7 @@ class ViewClinicalTest : Fragment() {
                         override fun onNothingSelected(parent: AdapterView<*>) {}
                     }
                 } else {
-                    patientNameDisplay.text = "Error loading patients"
+                    patientNameDisplay.text = "No patients found"
                 }
             }
         }
