@@ -153,6 +153,30 @@ class PatientDetailActivity : AppCompatActivity() {
             val gender = genderTextView.text.toString()
             val contact = contactTextView.text.toString()
             val history = historyTextView.text.toString()
+            if (name.isEmpty()) {
+                Toast.makeText(this,("Please enter patient name"),Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (ageTextView.text.toString().isEmpty()) {
+                Toast.makeText(this,("Please enter patient age"),Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (age == null) {
+                Toast.makeText(this,("Age must be a valid number"),Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (gender.isEmpty()) {
+                Toast.makeText(this,("Please select patient gender"),Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (contact.isEmpty()) {
+                Toast.makeText(this,("Please enter contact information"),Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             updatePatient(this, patientID, name, age, gender, contact, history)        }
         }
 
