@@ -136,9 +136,8 @@ class HomeActivity : BaseActivity() {
                 .addToBackStack(null)
                 .commit()
 
-            // Optional: Hide home FABs
-            fabAdd.hide()
-            fabAddAppointment.hide()
+//            fabAdd.hide()
+//            fabAddAppointment.hide()
         }
 
     // 🔹 View Critical Patients Button

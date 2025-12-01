@@ -61,31 +61,15 @@ class PatientSelectFragment : Fragment() {
             }
         }
 
-        // Click Button Open History Activity
-//        btnGo.setOnClickListener {
-//            if (selectedPatient != null) {
-//                // OPEN THE HISTORY ACTIVITY
-//                val intent = Intent(requireContext(), PatientHistoryActivity::class.java)
-//                intent.putExtra("PATIENT_ID", selectedPatient!!._id)
-//                intent.putExtra("PATIENT_NAME", selectedPatient!!.name)
-//                startActivity(intent)
-//            } else {
-//                Toast.makeText(requireContext(), "Please wait for patients to load", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//
-//        return view
-//    }
-//}
 // Click Listener
         btnGo.setOnClickListener {
-            Log.d("DEBUG_APP", "Button Clicked!") // <--- LOG
+            Log.d("DEBUG_APP", "Button Clicked!")
 
             if (selectedPatient != null) {
                 Log.d(
                     "DEBUG_APP",
                     "Launching History Activity for: ${selectedPatient!!.name}"
-                ) // <--- LOG
+                )
 
                 try {
                     val intent = Intent(requireContext(), PatientHistoryActivity::class.java)
@@ -93,11 +77,11 @@ class PatientSelectFragment : Fragment() {
                     intent.putExtra("PATIENT_NAME", selectedPatient!!.name)
                     startActivity(intent)
                 } catch (e: Exception) {
-                    Log.e("DEBUG_APP", "CRASH LAUNCHING ACTIVITY: ${e.message}") // <--- CATCH CRASH
+                    Log.e("DEBUG_APP", "CRASH LAUNCHING ACTIVITY: ${e.message}")
                     e.printStackTrace()
                 }
             } else {
-                Log.d("DEBUG_APP", "Patient is NULL") // <--- LOG
+                Log.d("DEBUG_APP", "Patient is NULL")
                 Toast.makeText(requireContext(), "Please select a patient", Toast.LENGTH_SHORT)
                     .show()
             }
