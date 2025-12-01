@@ -6,4 +6,13 @@
         <item>Blood Pressure</item>
         <item>Respiratory Rate</item>
     </string-array>
+    <string-array name="test_types">testType</string-array>
+
+    <string-array name="appointment_status_options">
+        <item>Scheduled</item>
+        <item>Pending</item>
+        <item>Cancelled</item>
+        <item>Attended</item>
+    </string-array>
+
 </resources>

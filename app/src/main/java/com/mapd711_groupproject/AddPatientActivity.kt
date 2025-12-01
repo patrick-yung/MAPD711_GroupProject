@@ -29,6 +29,12 @@ class AddPatientActivity : BaseActivity() {
 
         // 🧩 Gets references to the input fields
         val name = findViewById<EditText>(R.id.editTextName)
+        // If we came from an "Attended" appointment, prefill the name
+        val prefillName = intent.getStringExtra("fromAppointmentName")
+        if (!prefillName.isNullOrEmpty()) {
+            name.setText(prefillName)
+        }
+
         val age = findViewById<EditText>(R.id.editTextAge)
         val phone = findViewById<EditText>(R.id.editTextPhone)
         val condition = findViewById<EditText>(R.id.editTextCondition)

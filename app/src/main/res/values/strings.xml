@@ -56,6 +56,15 @@
     <string name="fill_all_fields">Please fill all fields</string>
     <string name="appointment_saved">Appointment saved successfully</string>
     <string name="appointment_save_error">Error saving appointment</string>
+    <string name="emergency_badge">EMERGENCY</string>
+
+    <string name="update_appointment">Update appointment</string>
+    <string name="mark_as_emergency">Mark as emergency</string>
+    <string name="appointment_updated">Appointment updated</string>
+    <string name="appointment_update_failed">Failed to update appointment</string>
+    <string name="appointment_deleted">Appointment deleted</string>
+    <string name="appointment_delete_failed">Failed to delete appointment</string>
+
 
 
 

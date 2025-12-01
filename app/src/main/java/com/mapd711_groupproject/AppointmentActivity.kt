@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,10 @@ import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import android.content.Intent
+import android.app.Activity
+
+
 
 class AppointmentActivity : AppCompatActivity() {
 
@@ -31,6 +37,11 @@ class AppointmentActivity : AppCompatActivity() {
         val etTime = findViewById<EditText>(R.id.etTime)
         val etReason = findViewById<EditText>(R.id.etReason)
         val btnSave = findViewById<Button>(R.id.btnSave)
+
+        // 🔹 Emergency controls (already exist in your XML)
+        val emergencyGroup = findViewById<RadioGroup>(R.id.radioEmergency)
+        val radioEmergencyYes = findViewById<RadioButton>(R.id.radioEmergencyYes)
+        val radioEmergencyNo = findViewById<RadioButton>(R.id.radioEmergencyNo)
 
         // DATE PICKER
         etDate.setOnClickListener {
@@ -68,11 +79,21 @@ class AppointmentActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            sendAppointmentToServer(name, doctor, date, time, reason)
+            // 🔹 Determine emergency flag (YES = true, NO = false default)
+            val isEmergency = radioEmergencyYes.isChecked
+
+            sendAppointmentToServer(name, doctor, date, time, reason, isEmergency)
         }
     }
 
-    private fun sendAppointmentToServer(name: String, doctor: String, date: String, time: String, reason: String) {
+    private fun sendAppointmentToServer(
+        name: String,
+        doctor: String,
+        date: String,
+        time: String,
+        reason: String,
+        isEmergency: Boolean
+    ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val url = URL(POST_URL)
@@ -87,6 +108,7 @@ class AppointmentActivity : AppCompatActivity() {
                     put("appointmentDate", "$date $time")
                     put("reason", reason)
                     put("status", "Scheduled")
+                    put("isEmergency", isEmergency)   // ✅ send emergency flag
                 }
 
                 val writer = OutputStreamWriter(conn.outputStream)
@@ -98,6 +120,12 @@ class AppointmentActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (code in 200..299) {
                         Toast.makeText(this@AppointmentActivity, "Appointment saved!", Toast.LENGTH_SHORT).show()
+
+                        // 🔥 Tell HomeActivity to refresh counts immediately
+                        val resultIntent = Intent()
+                        resultIntent.putExtra("refresh", true)
+                        setResult(Activity.RESULT_OK, resultIntent)
+
                         finish()
                     } else {
                         Toast.makeText(this@AppointmentActivity, "Error saving appointment.", Toast.LENGTH_SHORT).show()
