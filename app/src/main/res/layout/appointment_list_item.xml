@@ -70,6 +70,22 @@
             android:textColor="@android:color/black"
             android:layout_marginTop="6dp" />
 
+        <!-- 🔥 NEW — Attended Badge (Green) -->
+        <TextView
+            android:id="@+id/tvAttendedBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attended"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            android:textColor="#2ECC71"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tvEmergencyBadge"
             android:layout_width="wrap_content"

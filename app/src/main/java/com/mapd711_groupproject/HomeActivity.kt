@@ -142,7 +142,7 @@ class HomeActivity : BaseActivity() {
         clinicTestBtn.setOnClickListener {
             Log.d("HomeActivity", "Showing PatientSelectFragment.")
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, PatientSelectFragment())
+//                .replace(R.id.fragment_container, PatientSelectFragment())
                 .addToBackStack(null)
                 .commit()
 
@@ -153,7 +153,7 @@ class HomeActivity : BaseActivity() {
 
         // 🔹 View Critical Patients Button
         criticalBtn.setOnClickListener {
-            val intent = Intent(this, CriticalPatientsActivity::class.java)
+//            val intent = Intent(this, CriticalPatientsActivity::class.java)
             startActivity(intent)
         }
 

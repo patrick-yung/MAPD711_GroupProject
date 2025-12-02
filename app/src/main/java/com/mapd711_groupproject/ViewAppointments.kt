@@ -54,6 +54,10 @@ class ViewAppointments : Fragment() {
             onUpdateRequested = { updated ->
                 updateAppointmentOnServer(updated)
             },
+            // 🔹 Called when status is set to "Cancelled" in the dialog
+            onDeleteRequested = { appt, pos ->
+                animateAndDelete(appt, pos)
+            },
             onAttended = { appt ->
                 openAddPatientWithName(appt.patientName)
             }
@@ -91,14 +95,22 @@ class ViewAppointments : Fragment() {
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Failed to load appointments", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to load appointments",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
             } catch (e: Exception) {
                 Log.e(TAG, "Error fetching appointments: ${e.message}", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Error loading appointments", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error loading appointments",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -123,7 +135,7 @@ class ViewAppointments : Fragment() {
     }
 
     // --------------------------------------------------------------------
-    // UPDATE APPOINTMENT
+    // UPDATE APPOINTMENT (for non-cancelled statuses)
     // --------------------------------------------------------------------
     private fun updateAppointmentOnServer(updated: Appointment) {
         uiScope.launch(Dispatchers.IO) {
@@ -141,7 +153,7 @@ class ViewAppointments : Fragment() {
 
                 // MUST send full JSON so backend updates correctly
                 val body = JSONObject().apply {
-                    put("_id", updated.id)  // 🔥 REQUIRED FOR RENDER UPDATE
+                    put("_id", updated.id)  // REQUIRED FOR your backend
                     put("patientName", updated.patientName)
                     put("doctorName", updated.doctorName)
                     put("appointmentDate", updated.appointmentDate)
@@ -150,13 +162,11 @@ class ViewAppointments : Fragment() {
                     put("isEmergency", updated.isEmergency)
                 }
 
-
                 conn.outputStream.bufferedWriter().use { it.write(body.toString()) }
 
                 val responseCode = conn.responseCode
                 Log.d(TAG, "PUT /appointments/${updated.id} => $responseCode")
 
-                // Inside updateAppointmentOnServer success block:
                 withContext(Dispatchers.Main) {
                     if (responseCode == 200 || responseCode == 201 || responseCode == 202 || responseCode == 204) {
                         adapter.updateItem(updated)
@@ -166,10 +176,14 @@ class ViewAppointments : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
 
-                        // 🔥 Tell HomeActivity to refresh dashboard
+                        // Tell HomeActivity to refresh dashboard
                         parentFragmentManager.setFragmentResult("refresh_home", Bundle())
                     } else {
-                        Toast.makeText(requireContext(), getString(R.string.appointment_update_failed), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.appointment_update_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -186,6 +200,67 @@ class ViewAppointments : Fragment() {
         }
     }
 
+    // --------------------------------------------------------------------
+    // ANIMATE + DELETE when status was set to "Cancelled"
+    // --------------------------------------------------------------------
+    private fun animateAndDelete(appt: Appointment, pos: Int) {
+        val holder = recyclerView.findViewHolderForAdapterPosition(pos)
+        if (holder != null) {
+            holder.itemView.animate()
+                .translationX(holder.itemView.width.toFloat())
+                .setDuration(300)
+                .withEndAction {
+                    deleteAppointmentOnServer(appt, pos)
+                }
+        } else {
+            // Fallback if no holder (off-screen)
+            deleteAppointmentOnServer(appt, pos)
+        }
+    }
+
+    // --------------------------------------------------------------------
+    // DELETE APPOINTMENT (used by swipe + cancelled flow)
+    // --------------------------------------------------------------------
+    private fun deleteAppointmentOnServer(appt: Appointment, pos: Int) {
+        uiScope.launch(Dispatchers.IO) {
+            try {
+                val url = URL("$APPOINTMENTS_URL/${appt.id}")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "DELETE"
+
+                val code = conn.responseCode
+                Log.d(TAG, "DELETE /appointments/${appt.id} -> $code")
+
+                withContext(Dispatchers.Main) {
+                    if (code in 200..299) {
+                        adapter.removeAt(pos)
+                        Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+
+                        // Tell HomeActivity to refresh dashboard
+                        parentFragmentManager.setFragmentResult("refresh_home", Bundle())
+                    } else {
+                        adapter.notifyItemChanged(pos)
+                        Toast.makeText(
+                            requireContext(),
+                            "Delete failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Delete error: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    adapter.notifyItemChanged(pos)
+                    Toast.makeText(
+                        requireContext(),
+                        "Delete failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 
     // --------------------------------------------------------------------
     // SWIPE TO DELETE
@@ -195,7 +270,11 @@ class ViewAppointments : Fragment() {
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         ) {
-            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
+            override fun onMove(
+                rv: RecyclerView,
+                vh: RecyclerView.ViewHolder,
+                t: RecyclerView.ViewHolder
+            ) = false
 
             override fun onSwiped(vh: RecyclerView.ViewHolder, dir: Int) {
                 val pos = vh.bindingAdapterPosition
@@ -211,41 +290,6 @@ class ViewAppointments : Fragment() {
         }
 
         ItemTouchHelper(cb).attachToRecyclerView(recyclerView)
-    }
-
-    private fun deleteAppointmentOnServer(appt: Appointment, pos: Int) {
-        uiScope.launch(Dispatchers.IO) {
-            try {
-                val url = URL("$APPOINTMENTS_URL/${appt.id}")
-                val conn = url.openConnection() as HttpURLConnection
-                conn.requestMethod = "DELETE"
-
-                val code = conn.responseCode
-                Log.d(TAG, "DELETE /appointments/${appt.id} -> $code")
-
-                // Inside deleteAppointmentOnServer success block:
-                withContext(Dispatchers.Main) {
-                    if (code in 200..299) {
-                        adapter.removeAt(pos)
-                        Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
-
-                        // 🔥 Tell HomeActivity to refresh dashboard
-                        parentFragmentManager.setFragmentResult("refresh_home", Bundle())
-                    } else {
-                        adapter.notifyItemChanged(pos)
-                        Toast.makeText(requireContext(), "Delete failed", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-
-            } catch (e: Exception) {
-                Log.e(TAG, "Delete error: ${e.message}")
-                withContext(Dispatchers.Main) {
-                    adapter.notifyItemChanged(pos)
-                    Toast.makeText(requireContext(), "Delete failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     // --------------------------------------------------------------------

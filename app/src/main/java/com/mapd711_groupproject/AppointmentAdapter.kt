@@ -1,6 +1,8 @@
 package com.mapd711_groupproject
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +21,7 @@ class AppointmentAdapter(
     private val items: MutableList<Appointment>,
     private val context: Context,
     private val onUpdateRequested: (Appointment) -> Unit,
+    private val onDeleteRequested: (Appointment, Int) -> Unit,
     private val onAttended: (Appointment) -> Unit
 ) : RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder>() {
 
@@ -29,6 +33,7 @@ class AppointmentAdapter(
         val tvReason: TextView = itemView.findViewById(R.id.tvReason)
         val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
         val tvEmergencyBadge: TextView = itemView.findViewById(R.id.tvEmergencyBadge)
+        val tvAttendedBadge: TextView = itemView.findViewById(R.id.tvAttendedBadge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppointmentViewHolder {
@@ -47,26 +52,33 @@ class AppointmentAdapter(
         holder.tvDateTime.text = appt.appointmentDate
         holder.tvReason.text = "Reason: ${appt.reason}"
 
-        // 🔥 Correct status always updates
         holder.tvStatus.text = "Status: ${appt.status}"
 
-        // 🔥 EMERGENCY UI — Now fully working
-        if (appt.isEmergency) {
+        // 🔥 NEW: Attended — green border + badge
+        if (appt.status.equals("Attended", ignoreCase = true)) {
+            holder.tvAttendedBadge.visibility = View.VISIBLE
+
+            holder.card.strokeWidth = 4
+            holder.card.strokeColor =
+                ContextCompat.getColor(context, android.R.color.holo_green_dark)
+
+        } else if (appt.isEmergency) {
+            // Emergency red border
             holder.tvEmergencyBadge.visibility = View.VISIBLE
-            holder.tvEmergencyBadge.background =
-                ContextCompat.getDrawable(context, R.drawable.emergency_badge_background)
+            holder.tvAttendedBadge.visibility = View.GONE
 
             holder.card.strokeWidth = 4
             holder.card.strokeColor =
                 ContextCompat.getColor(context, android.R.color.holo_red_dark)
 
         } else {
+            // No border
+            holder.tvAttendedBadge.visibility = View.GONE
             holder.tvEmergencyBadge.visibility = View.GONE
             holder.card.strokeWidth = 0
-            holder.card.strokeColor = ContextCompat.getColor(context, android.R.color.transparent)
         }
 
-        // ✨ Entry animation
+        // Animation
         holder.itemView.alpha = 0f
         holder.itemView.translationY = 40f
         holder.itemView.animate()
@@ -76,13 +88,12 @@ class AppointmentAdapter(
             .setInterpolator(DecelerateInterpolator())
             .start()
 
-        // 🟦 Tap → Update dialog
         holder.itemView.setOnClickListener {
-            showUpdateDialog(holder.itemView.context, appt)
+            showUpdateDialog(holder.itemView.context, appt, position)
         }
     }
 
-    private fun showUpdateDialog(context: Context, appointment: Appointment) {
+    private fun showUpdateDialog(context: Context, appointment: Appointment, position: Int) {
         val dialogView = LayoutInflater.from(context)
             .inflate(R.layout.dialog_update_appointment, null)
 
@@ -92,36 +103,44 @@ class AppointmentAdapter(
 
         tvDialogPatient.text = "Patient: ${appointment.patientName}"
 
-        // Load status values
-        ArrayAdapter.createFromResource(
-            context,
-            R.array.appointment_status_options,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerStatus.adapter = adapter
-        }
+        val statusOptions = arrayOf("Scheduled", "Pending", "Cancelled", "Attended")
 
-        // Set current status
-        val statusArray = context.resources.getStringArray(R.array.appointment_status_options)
-        val currentIndex = statusArray.indexOfFirst {
+        spinnerStatus.adapter = ArrayAdapter(
+            context,
+            android.R.layout.simple_spinner_dropdown_item,
+            statusOptions
+        )
+
+        val currentIndex = statusOptions.indexOfFirst {
             it.equals(appointment.status, ignoreCase = true)
-        }.takeIf { it >= 0 } ?: 0
+        }.coerceAtLeast(0)
 
         spinnerStatus.setSelection(currentIndex)
-
-        // Set current emergency flag
         checkEmergency.isChecked = appointment.isEmergency
 
-        // Dialog
         AlertDialog.Builder(context)
-            .setTitle(context.getString(R.string.update_appointment))
+            .setTitle("Update Appointment")
             .setView(dialogView)
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(android.R.string.ok) { _, _ ->
 
                 val newStatus = spinnerStatus.selectedItem.toString()
                 val newEmergency = checkEmergency.isChecked
+
+                if (newStatus == "Cancelled") {
+
+                    Toast.makeText(
+                        context,
+                        "Deleting appointment ${appointment.patientName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        onDeleteRequested(appointment, position)
+                    }, 4000)
+
+                    return@setPositiveButton
+                }
 
                 val updated = appointment.copy(
                     status = newStatus,
@@ -130,25 +149,13 @@ class AppointmentAdapter(
 
                 onUpdateRequested(updated)
 
-                if (newStatus.equals("Attended", ignoreCase = true)) {
-                    onAttended(updated)
-                }
             }
             .show()
     }
 
-    fun getItemAt(position: Int): Appointment = items[position]
-
-    fun removeAt(position: Int): Appointment {
-        val removed = items.removeAt(position)
+    fun removeAt(position: Int) {
+        items.removeAt(position)
         notifyItemRemoved(position)
-        return removed
-    }
-
-    fun replaceAll(newItems: List<Appointment>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
     }
 
     fun updateItem(updated: Appointment) {
@@ -157,5 +164,15 @@ class AppointmentAdapter(
             items[index] = updated
             notifyItemChanged(index)
         }
+    }
+
+    fun getItemAt(position: Int): Appointment {
+        return items[position]
+    }
+
+    fun replaceAll(newItems: List<Appointment>) {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
     }
 }
