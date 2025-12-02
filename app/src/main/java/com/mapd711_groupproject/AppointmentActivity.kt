@@ -19,7 +19,10 @@ import java.net.URL
 
 class AppointmentActivity : AppCompatActivity() {
 
-    private val POST_URL = "https://mapd713-group-project-2.onrender.com/appointments"
+    private val POST_URL = Globals.BASE_URL+"/appointments"
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

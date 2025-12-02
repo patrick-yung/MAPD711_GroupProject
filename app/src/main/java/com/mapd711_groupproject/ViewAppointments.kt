@@ -15,13 +15,13 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+import com.mapd711_groupproject.Globals
 
 class ViewAppointments : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
 
-    private val APPOINTMENTS_URL =
-        "https://mapd713-group-project-2.onrender.com/appointments"
+    private val APPOINTMENTS_URL =Globals.BASE_URL+"/appointments"
 
     override fun onCreateView(
         inflater: LayoutInflater,

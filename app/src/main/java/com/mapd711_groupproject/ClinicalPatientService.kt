@@ -13,7 +13,7 @@ data class ClinicalPatient(
 )
 
 object ClinicalPatientService {
-    private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
+    private const val PATIENTS_URL = Globals.BASE_URL+"/patients"
 
     suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
         return withContext(Dispatchers.IO) {

@@ -12,7 +12,8 @@ import java.net.URL
 
 object ClinicalService {
 
-    private const val CLINICAL_URL = "https://mapd713-group-project.onrender.com/clinicaldata"
+
+    private const val CLINICAL_URL  = Globals.BASE_URL+"/clinicaldata"
 
     // uploadtest function
     suspend fun uploadTest(context: Context, request: ClinicalTestRequest): ClinicalTestResponse? {
@@ -66,8 +67,7 @@ object ClinicalService {
             val list = mutableListOf<ClinicalTestResponse>()
             try {
                 // Build the URL for the specific patient
-                val urlString =
-                    "https://mapd713-group-project.onrender.com/clinicaldata/patients/$patientId"
+                val urlString = Globals.BASE_URL+"/clinicaldata/patients/$patientId"
                 Log.d("ClinicalService", "Fetching history: $urlString")
 
                 val url = URL(urlString)
@@ -105,8 +105,7 @@ object ClinicalService {
         return withContext(Dispatchers.IO) {
             val list = mutableListOf<ClinicalTestResponse>()
             try {
-                val urlString =
-                    "https://mapd713-group-project.onrender.com/clinicaldata/types/$type"
+                val urlString  = Globals.BASE_URL+"/clinicaldata/types/$type"
 
                 val url = URL(urlString)
 
