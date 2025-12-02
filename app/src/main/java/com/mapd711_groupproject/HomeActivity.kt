@@ -12,11 +12,32 @@ import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import android.widget.TextView
 import kotlinx.coroutines.withContext
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 
 class HomeActivity : BaseActivity() {
+
+    private fun loadPatientCount() {
+        val numberPatientsTxt = findViewById<TextView>(R.id.numbPatientsTxt)
+
+        GlobalScope.launch {
+            try {
+                val patients = PatientService.fetchPatients()
+                val count = patients?.size ?: 0
+
+                withContext(Dispatchers.Main) {
+                    numberPatientsTxt.text = count.toString()
+                }
+            } catch (e: Exception) {
+                Log.e("HomeActivity", "Error loading patients: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    numberPatientsTxt.text = "0"
+                }
+            }
+        }
+    }
 
     private var currentFragment = ""
 
@@ -43,9 +64,7 @@ class HomeActivity : BaseActivity() {
         val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
         val clinicTestBtn = findViewById<Button>(R.id.button6)
         val criticalBtn = findViewById<Button>(R.id.button4)
-
-
-
+        loadPatientCount()
 
 
 
