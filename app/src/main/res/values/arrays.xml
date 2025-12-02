@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="select_test_type">
         <item>Select test type</item>
         <item>Heart Rate</item>
         <item>Blood Pressure</item>
         <item>Respiratory Rate</item>
     </string-array>
-    <string-array name="test_types">testType</string-array>
+
+    <!-- Keeping THEIR test_types array, but fixing it so it’s valid -->
+    <string-array name="test_types">
+        <item>testType</item>
+    </string-array>
+
+    <!-- Keeping YOUR full appointment options -->
+    <string-array name="appointment_status_options">
+        <item>Scheduled</item>
+        <item>Pending</item>
+        <item>Cancelled</item>
+        <item>Attended</item>
+    </string-array>
+
 </resources>
