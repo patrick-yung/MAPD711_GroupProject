@@ -15,11 +15,15 @@ data class ClinicalPatient(
 )
 
 object ClinicalPatientService {
+
     private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
 
-    // ✅ REQUIRED FIX — client reference
+    // ✅ KEEP YOUR OKHTTP CLIENT
     private val client = OkHttpClient()
 
+    // -----------------------------------------------------------
+    // FETCH ALL PATIENT NAMES + IDS (both your logic + theirs kept)
+    // -----------------------------------------------------------
     suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
         return withContext(Dispatchers.IO) {
             try {
@@ -30,7 +34,8 @@ object ClinicalPatientService {
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    val responseText = connection.inputStream.bufferedReader().use { it.readText() }
+                    val responseText =
+                        connection.inputStream.bufferedReader().use { it.readText() }
                     Log.d("ClinicalPatientService", "Response: $responseText")
 
                     val jsonArray = JSONArray(responseText)
@@ -47,6 +52,7 @@ object ClinicalPatientService {
                             list.add(ClinicalPatient(id, name))
                         }
                     }
+
                     return@withContext list
                 } else {
                     Log.e("ClinicalPatientService", "Error Code: ${connection.responseCode}")
@@ -60,12 +66,16 @@ object ClinicalPatientService {
         }
     }
 
+    // -----------------------------------------------------------
+    // FETCH TOTAL PATIENT COUNT (your added function)
+    // -----------------------------------------------------------
     suspend fun fetchPatientsCount(): Int {
         return try {
-            val url = URL(PATIENTS_URL)
-            val request = Request.Builder().url(url).get().build()
+            val request = Request.Builder()
+                .url(PATIENTS_URL)
+                .get()
+                .build()
 
-            // ✅ FIXED — Now client exists
             val response = client.newCall(request).execute()
             if (!response.isSuccessful) return 0
 
@@ -73,6 +83,7 @@ object ClinicalPatientService {
             val arr = JSONArray(body)
 
             arr.length()
+
         } catch (e: Exception) {
             e.printStackTrace()
             0

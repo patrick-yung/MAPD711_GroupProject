@@ -25,144 +25,134 @@ class HomeActivity : BaseActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
-        // 🔹 Setup navigation drawer (hamburger)
+        // 🔹 Setup drawer
         setupDrawer(R.id.nav_home)
 
-        // 🔹 Handles top/bottom safe-area padding
+        // 🔹 System bar padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(sys.left, sys.top, sys.right, sys.bottom)
             insets
         }
 
-        // 🔹 Buttons
-        val patientsBtn = findViewById<Button>(R.id.button5)
-        val appointmentsBtn = findViewById<Button>(R.id.button7)
-        val fabAddPatient = findViewById<Button>(R.id.fabAdd)
-        val fabAddAppointment = findViewById<ExtendedFloatingActionButton>(R.id.fabAddAppointment)
-        val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
-
-
-        val clinicTestBtn = findViewById<Button>(R.id.button6)
-        val criticalBtn = findViewById<Button>(R.id.button4)
-
-        // 🔹 Dashboard text views (for dynamic counts)
+        // 🔹 Dashboard Text Views
         val totalPatientsText = findViewById<TextView>(R.id.textView3)
         val totalAppointmentsText = findViewById<TextView>(R.id.textView5)
 
-        // 🔹 Listen for refresh signals from ViewAppointments
+        refreshDashboardCounts(totalPatientsText, totalAppointmentsText)
+
+        // 🔹 Listen for refresh signal from ViewAppointments
         supportFragmentManager.setFragmentResultListener("refresh_home", this) { _, _ ->
             refreshDashboardCounts(totalPatientsText, totalAppointmentsText)
         }
 
-        // 🔹 Patient Activity launcher
+        // ============================
+        // BUTTONS + FABs
+        // ============================
+        val patientsBtn = findViewById<Button>(R.id.button5)
+        val appointmentsBtn = findViewById<Button>(R.id.button7)
+        val clinicTestBtn = findViewById<Button>(R.id.button6)
+        val criticalBtn = findViewById<Button>(R.id.button4)
+
+        val fabAddPatient = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
+        val fabAddAppointment = findViewById<ExtendedFloatingActionButton>(R.id.fabAddAppointment)
+
+        // ============================
+        // ADD PATIENT LAUNCHER
+        // ============================
         val addPatientLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
+
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                val lastPatientName = data?.getStringExtra("patientName")
-                val lastPatientAge = data?.getStringExtra("patientAge")
-                val lastPatientPhone = data?.getStringExtra("patientPhone")
-                val lastPatientCondition = data?.getStringExtra("patientCondition")
-                val lastPatientGender = data?.getStringExtra("patientGender")
+                val name = data?.getStringExtra("patientName")
+                val age = data?.getStringExtra("patientAge")
+                val phone = data?.getStringExtra("patientPhone")
+                val condition = data?.getStringExtra("patientCondition")
+                val gender = data?.getStringExtra("patientGender")
 
-                if (lastPatientName != null &&
-                    lastPatientAge != null &&
-                    lastPatientPhone != null &&
-                    lastPatientCondition != null &&
-                    lastPatientGender != null
-                ) {
+                refreshDashboardCounts(totalPatientsText, totalAppointmentsText)
+
+                if (name != null && age != null && phone != null && condition != null && gender != null) {
                     PatientService.uploadPatient(
                         context = this,
-                        name = lastPatientName,
-                        age = lastPatientAge,
-                        phone = lastPatientPhone,
-                        condition = lastPatientCondition,
-                        gender = lastPatientGender,
+                        name = name,
+                        age = age,
+                        phone = phone,
+                        condition = condition,
+                        gender = gender
                     )
                 }
             }
         }
 
-        // 🔹 FAB — Add Patient
+        // ============================
+        // FAB — ADD PATIENT
+        // ============================
         fabAddPatient.setOnClickListener {
-            val intent = Intent(this, AddPatientActivity::class.java)
-            addPatientLauncher.launch(intent)
+            addPatientLauncher.launch(Intent(this, AddPatientActivity::class.java))
         }
 
-        // 🔹 NEW — Add Appointment Button
+        // ============================
+        // FAB — ADD APPOINTMENT
+        // ============================
         fabAddAppointment.setOnClickListener {
-            Log.d("HomeActivity", "Add Appointment FAB clicked")
-            val intent = Intent(this, AppointmentActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, AppointmentActivity::class.java))
         }
 
-        // 🔹 View Patients Button
+        // ============================
+        // VIEW PATIENTS
+        // ============================
         patientsBtn.setOnClickListener {
             if (currentFragment != "patients") {
+                GlobalScope.launch(Dispatchers.Main) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ViewPatients())
+                        .addToBackStack(null)
+                        .commit()
 
-                GlobalScope.launch {
-                    withContext(Dispatchers.Main) {
-                        val viewPatientsFragment = ViewPatients()
-
-                        Log.d("HomeActivity", "Button clicked, showing ViewPatients fragment.")
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, viewPatientsFragment)
-                            .addToBackStack(null)
-                            .commit()
-
-                        currentFragment = "patients"
-                    }
+                    currentFragment = "patients"
                 }
             }
         }
 
-        // 🔹 View Appointments Button
+        // ============================
+        // VIEW APPOINTMENTS
+        // ============================
         appointmentsBtn.setOnClickListener {
             if (currentFragment != "appointments") {
-                GlobalScope.launch {
-                    withContext(Dispatchers.Main) {
-                        val viewAppointmentsFragment = ViewAppointments()
+                GlobalScope.launch(Dispatchers.Main) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ViewAppointments())
+                        .addToBackStack(null)
+                        .commit()
 
-                        Log.d("HomeActivity", "Showing ViewAppointments fragment.")
-
-                        supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, viewAppointmentsFragment)
-                            .addToBackStack(null)
-                            .commit()
-
-                        currentFragment = "appointments"
-                    }
+                    currentFragment = "appointments"
                 }
             }
         }
 
-        // 🔹 View Clinical Tests Button
+        // ============================
+        // VIEW CLINICAL TESTS
+        // ============================
         clinicTestBtn.setOnClickListener {
-            Log.d("HomeActivity", "Showing PatientSelectFragment.")
             supportFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, PatientSelectFragment())
+                .replace(R.id.fragment_container, PatientSelectFragment())
                 .addToBackStack(null)
                 .commit()
-
-            // Optional: Hide home FABs
-            fabAdd.hide()
-            fabAddAppointment.hide()
         }
 
-        // 🔹 View Critical Patients Button
+        // ============================
+        // VIEW CRITICAL PATIENTS
+        // ============================
         criticalBtn.setOnClickListener {
-//            val intent = Intent(this, CriticalPatientsActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, CriticalPatientsActivity::class.java))
         }
-
-        // 🔹 Update dashboard numbers when screen loads
-        refreshDashboardCounts(totalPatientsText, totalAppointmentsText)
     }
 
     // -----------------------------------------------------------
-    // 🔥 Refresh counts every time user returns to Home
+    // 🔥 When user returns to Home screen, refresh the dashboard
     // -----------------------------------------------------------
     override fun onResume() {
         super.onResume()
@@ -174,7 +164,7 @@ class HomeActivity : BaseActivity() {
     }
 
     // -----------------------------------------------------------
-    // 🔹 Helper to load dynamic Patients + Appointments counts
+    // 🔥 Live dynamic dashboard numbers
     // -----------------------------------------------------------
     private fun refreshDashboardCounts(
         totalPatientsText: TextView,
@@ -182,23 +172,18 @@ class HomeActivity : BaseActivity() {
     ) {
         GlobalScope.launch(Dispatchers.IO) {
 
-            // 🔹 Fetch Patients Count (suspend fun)
             val patientsCount = try {
                 ClinicalPatientService.fetchPatientsCount()
             } catch (e: Exception) {
-                e.printStackTrace()
                 0
             }
 
-            // 🔹 Fetch Appointments Count (suspend fun)
             val appointmentsCount = try {
                 AppointmentService.fetchAppointmentsCount()
             } catch (e: Exception) {
-                e.printStackTrace()
                 0
             }
 
-            // 🔹 Update UI on main thread
             withContext(Dispatchers.Main) {
                 totalPatientsText.text = "Total Patients: $patientsCount"
                 totalAppointmentsText.text = "Appointments Made: $appointmentsCount"

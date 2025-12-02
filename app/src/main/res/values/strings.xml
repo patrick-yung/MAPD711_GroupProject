@@ -66,8 +66,8 @@
     <string name="appointment_delete_failed">Failed to delete appointment</string>
 
 
-
-
-
+    <string name="authorP">Yung Pak Hong Patrick</string>
+    <string name="authorD">Denima Iyalla</string>
+    <string name="authorI">Iffat Ara Magduri</string>
 
 </resources>
