@@ -15,8 +15,8 @@ data class ClinicalPatient(
 )
 
 object ClinicalPatientService {
+    private const val PATIENTS_URL = Globals.BASE_URL+"/patients"
 
-    private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
 
     // ✅ KEEP YOUR OKHTTP CLIENT
     private val client = OkHttpClient()

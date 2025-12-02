@@ -24,7 +24,9 @@ class PatientDetailActivity : AppCompatActivity() {
     ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val url = URL("https://mapd713-group-project.onrender.com/patients/$patientId")
+                val urlBase = Globals.BASE_URL+"/patients/$patientId"
+
+                val url = URL(urlBase)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "DELETE" // Fixed: Changed from "DEL" to "DELETE"
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
@@ -66,7 +68,9 @@ class PatientDetailActivity : AppCompatActivity() {
     ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val url = URL("https://mapd713-group-project.onrender.com/patients/$patientId")
+                val urlBase = Globals.BASE_URL+"/patients/$patientId"
+
+                val url = URL(urlBase)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "PUT"
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")

@@ -21,6 +21,7 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import com.mapd711_groupproject.Globals
 
 class PatientAdapter(
     private val patientList: List<PatientService.Patient>,
@@ -82,7 +83,8 @@ object PatientService {
     ) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val url = URL("https://mapd713-group-project.onrender.com/patients")
+                val urlBase = Globals.BASE_URL+"/patients"
+                val url = URL(urlBase)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
@@ -127,7 +129,8 @@ object PatientService {
     suspend fun fetchPatients(): List<Patient>? {
         return withContext(Dispatchers.IO) {
             try {
-                val url = URL("https://mapd713-group-project.onrender.com/patients")
+                val urlBase = Globals.BASE_URL+"/patients"
+                val url = URL(urlBase)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")

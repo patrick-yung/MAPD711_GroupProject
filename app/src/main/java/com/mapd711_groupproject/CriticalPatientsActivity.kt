@@ -1,74 +1,92 @@
 package com.mapd711_groupproject
 
-import android.graphics.Color
-import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
-class CriticalPatientsActivity : AppCompatActivity() {
+data class ClinicalPatient(
+    val _id: String,
+    val name: String
+)
 
-    private lateinit var listView: ListView
+object ClinicalPatientService {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_critical_patients)
+    private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
 
-        listView = findViewById(R.id.listCriticalTests)
-        loadCriticalData()
-    }
+    // ✅ KEEP YOUR OKHTTP CLIENT
+    private val client = OkHttpClient()
 
-    // Load data when returning to the screen
-    override fun onResume() {
-        super.onResume()
-        loadCriticalData()
-    }
+    // -----------------------------------------------------------
+    // FETCH ALL PATIENT NAMES + IDS (both your logic + theirs kept)
+    // -----------------------------------------------------------
+    suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("ClinicalPatientService", "Fetching from: $PATIENTS_URL")
 
-    private fun loadCriticalData() {
-        GlobalScope.launch {
-            val patients = ClinicalPatientService.fetchPatientNamesAndIds()
-            val patientMap = patients.associate { it._id to it.name }
+                val url = URL(PATIENTS_URL)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
 
-            //Define the types
-            val typesToCheck = listOf("blood pressure", "heart rate", "respiratory rate", "spo2")
-            val criticalList = mutableListOf<String>()
+                if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                    val responseText =
+                        connection.inputStream.bufferedReader().use { it.readText() }
+                    Log.d("ClinicalPatientService", "Response: $responseText")
 
-            for (type in typesToCheck) {
-                val tests = ClinicalService.fetchTestsByType(type)
+                    val jsonArray = JSONArray(responseText)
+                    val list = mutableListOf<ClinicalPatient>()
 
-                // Filter for Critical (flagged == true)
-                val flaggedTests = tests.filter { it.flagged }
+                    for (i in 0 until jsonArray.length()) {
+                        val obj = jsonArray.getJSONObject(i)
+                        Log.d("ClinicalPatientService", "Object: $obj")
 
-                for (test in flaggedTests) {
-                    val pName = patientMap[test.patientId] ?: "Unknown Patient"
+                        val id = obj.optString("_id", "")
+                        val name = obj.optString("name", "Unknown")
 
-                    // Format the display string
-                    val entry = """
-                        Patient: $pName
-                        Type: ${test.type.uppercase()}
-                        Value: ${test.value}
-                        Date: ${test.measuredDateTime}
-                    """.trimIndent()
+                        if (id.isNotEmpty()) {
+                            list.add(ClinicalPatient(id, name))
+                        }
+                    }
 
-                    criticalList.add(entry)
-                }
-            }
-
-
-            withContext(Dispatchers.Main) {
-                if (criticalList.isNotEmpty()) {
-                    val adapter = ArrayAdapter(this@CriticalPatientsActivity, android.R.layout.simple_list_item_1, criticalList)
-                    listView.adapter = adapter
+                    return@withContext list
                 } else {
-                    val emptyList = listOf("Good News: No Critical Patients Found.")
-                    listView.adapter = ArrayAdapter(this@CriticalPatientsActivity, android.R.layout.simple_list_item_1, emptyList)
+                    Log.e("ClinicalPatientService", "Error Code: ${connection.responseCode}")
+                    return@withContext emptyList()
                 }
+
+            } catch (e: Exception) {
+                Log.e("ClinicalPatientService", "Exception: ${e.message}")
+                return@withContext emptyList()
             }
+        }
+    }
+
+    // -----------------------------------------------------------
+    // FETCH TOTAL PATIENT COUNT (your added function)
+    // -----------------------------------------------------------
+    suspend fun fetchPatientsCount(): Int {
+        return try {
+            val request = Request.Builder()
+                .url(PATIENTS_URL)
+                .get()
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) return 0
+
+            val body = response.body?.string() ?: return 0
+            val arr = JSONArray(body)
+
+            arr.length()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
         }
     }
 }
