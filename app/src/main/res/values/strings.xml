@@ -57,5 +57,8 @@
     <string name="appointment_saved">Appointment saved successfully</string>
     <string name="appointment_save_error">Error saving appointment</string>
 
+    <string name="authorP">Yung Pak Hong Patrick</string>
+    <string name="authorD">Denima Iyalla</string>
+    <string name="authorI">Iffat Ara Magduri</string>
 
 </resources>
