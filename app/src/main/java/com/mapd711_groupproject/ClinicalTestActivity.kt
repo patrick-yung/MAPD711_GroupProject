@@ -8,10 +8,15 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ClinicalTestActivity : AppCompatActivity() {
 
@@ -39,7 +44,9 @@ class ClinicalTestActivity : AppCompatActivity() {
         }
 
         //take patient name from add patient activityjony
-        val patientName = intent.getStringExtra("patientName")
+        val patientName = intent.getStringExtra("PATIENT_NAME")
+        val patientId = intent.getStringExtra("PATIENT_ID") ?: ""
+
         val etPatientName = findViewById<EditText>(R.id.patientName)
         etPatientName.setText(patientName)
 
@@ -99,57 +106,59 @@ class ClinicalTestActivity : AppCompatActivity() {
         tvSavedTests.text = "No tests saved yet"
 
         btnSaveTest.setOnClickListener {
-            val patientName = etPatientName.text.toString()
-            val testType = spinnerTestType.selectedItem.toString()
-            val testDate = selectDate.text.toString()
-            val heartRate = etHeartRate.text.toString()
-            val systolic = etSystolic.text.toString()
-            val diastolic = etDiastolic.text.toString()
-            val bpPulse = etBPpulse.text.toString()
-            val respRate = etRespRate.text.toString()
-            val notes = findViewById<EditText>(R.id.etNotes).text.toString()
-            saveTestResult(
-                patientName,
-                testType,
-                testDate,
-                heartRate,
-                systolic,
-                diastolic,
-                bpPulse,
-                respRate,
-                notes
-            )
+            //Gather Data from Inputs
+            val type = spinnerTestType.selectedItem.toString().lowercase()
+            var value = ""
 
-            //test result will be saved as shared preference
-            val sharedPreferences = getSharedPreferences("test_results", MODE_PRIVATE)
-            val editor = sharedPreferences.edit()
-            editor.putString("patientName", patientName)
-            editor.putString("testType", testType)
-            editor.putString("testDate", testDate)
-            editor.putString("heartRate", heartRate)
-            editor.putString("systolic", systolic)
-            editor.putString("diastolic", diastolic)
-            editor.putString("bpPulse", bpPulse)
-            editor.putString("respRate", respRate)
-            editor.putString("notes", notes)
-            editor.apply()
-
-            //test result will be shown in text view
-            val resultText = StringBuilder()
-            resultText.append("Patient Name: $patientName\n")
-            resultText.append("Test Type: $testType\n")
-            resultText.append("Test Date: $testDate\n")
-
-            when (testType) {
-                "Heart Rate" -> resultText.append("Heart Rate: $heartRate\n")
-                "Blood Pressure" -> resultText.append("Systolic: $systolic\nDiastolic: $diastolic\nPulse: $bpPulse\n")
-                "Respiratory Rate" -> resultText.append("Resp Rate: $respRate\n")
+            // Formatting Logic
+            if (type == "blood pressure") {
+                if (etSystolic.text.isEmpty() || etDiastolic.text.isEmpty()) {
+                    Toast.makeText(this, "Enter BP values", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                value = "${etSystolic.text}/${etDiastolic.text}"
+            } else if (type == "heart rate") {
+                value = etHeartRate.text.toString()
+            } else if (type == "respiratory rate") {
+                value = etRespRate.text.toString()
             }
 
-            if (notes.isNotEmpty()) resultText.append("Notes: $notes\n")
-            tvSavedTests.text = resultText.toString()
+            // Validation
+            if (value.isEmpty()) {
+                Toast.makeText(this, "Enter a test value", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+            val request = ClinicalTestRequest(
+                patientId = patientId,
+                type = type,
+                value = value
+            )
+
+
+            GlobalScope.launch {
+                val response = ClinicalService.uploadTest(this@ClinicalTestActivity, request)
+
+                withContext(Dispatchers.Main) {
+                    if (response != null) {
+                        Toast.makeText(
+                            this@ClinicalTestActivity,
+                            "Saved successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this@ClinicalTestActivity,
+                            "Save failed. Try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
         }
-
-
     }
 }

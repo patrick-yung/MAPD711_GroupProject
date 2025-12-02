@@ -20,10 +20,9 @@
             app:cardElevation="4dp"
             app:cardBackgroundColor="@android:color/white">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="24dp">
 
                 <!-- Patient Name -->
@@ -35,23 +34,35 @@
                     android:textColor="#1a1a1a"
                     android:textSize="28sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:layout_toLeftOf="@+id/buttonDelete"
+                    android:layout_toStartOf="@+id/buttonDelete" />
 
                 <!-- Patient ID/Badge -->
-                <TextView
+
+                <!-- Delete Button -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/patient_status_badge"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/textViewPatientName"
+                    android:text="Delete"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="8dp"
+                    app:icon="@android:drawable/ic_menu_delete"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp"
-                    android:text="Active Patient"
-                    android:textColor="#2196F3"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </com.google.android.material.card.MaterialCardView>
 

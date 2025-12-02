@@ -6,8 +6,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 data class ClinicalPatient(
     val _id: String,
@@ -16,9 +14,6 @@ data class ClinicalPatient(
 
 object ClinicalPatientService {
     private const val PATIENTS_URL = "https://mapd713-group-project.onrender.com/patients"
-
-    // ✅ REQUIRED FIX — client reference
-    private val client = OkHttpClient()
 
     suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
         return withContext(Dispatchers.IO) {
@@ -57,25 +52,6 @@ object ClinicalPatientService {
                 Log.e("ClinicalPatientService", "Exception: ${e.message}")
                 return@withContext emptyList()
             }
-        }
-    }
-
-    suspend fun fetchPatientsCount(): Int {
-        return try {
-            val url = URL(PATIENTS_URL)
-            val request = Request.Builder().url(url).get().build()
-
-            // ✅ FIXED — Now client exists
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) return 0
-
-            val body = response.body?.string() ?: return 0
-            val arr = JSONArray(body)
-
-            arr.length()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            0
         }
     }
 }
