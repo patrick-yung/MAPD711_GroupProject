@@ -31,7 +31,9 @@
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".CriticalPatientsActivity"
+            android:exported="false" />
         <activity android:name=".AppointmentActivity" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
