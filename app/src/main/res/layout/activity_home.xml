@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <!-- main area -->
+    <!-- MAIN AREA -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- blue toolbar -->
+        <!-- BLUE TOOLBAR -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -23,19 +23,17 @@
             android:gravity="center_vertical"
             android:minHeight="?attr/actionBarSize"
             android:paddingTop="12dp"
-            android:paddingBottom="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
             app:title="@string/homeBtnText"
-            app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@android:color/white" />
 
+        <!-- CONTENT -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_gray"
-            tools:context=".HomeActivity">
+            android:background="@color/light_gray">
 
             <!-- HEADER TITLE -->
             <TextView
@@ -45,9 +43,9 @@
                 android:fontFamily="sans-serif-black"
                 android:text="@string/header"
                 android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <!-- WELCOME TEXT -->
@@ -61,91 +59,111 @@
                 app:layout_constraintTop_toBottomOf="@id/textView"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- ⭐⭐ NEW: HORIZONTAL WRAPPER FOR PATIENT + APPOINTMENTS ⭐⭐ -->
+            <!-- ⭐ MERGED DASHBOARD ROW ⭐ -->
             <LinearLayout
-                android:id="@+id/statsContainer"
-                android:orientation="horizontal"
-                android:layout_width="0dp"
+                android:id="@+id/dashboardRow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
                 android:gravity="center"
-                android:weightSum="2"
-                app:layout_constraintTop_toBottomOf="@id/textView2"
+                android:padding="12dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <!-- LEFT COLUMN: PATIENT STATS -->
-                <LinearLayout
-                    android:orientation="horizontal"
+                <!-- TOTAL PATIENTS CARD -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="36dp"
-                        android:layout_height="37dp"
-                        android:backgroundTint="#2196F3"
-                        app:srcCompat="@drawable/patients" />
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp">
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/patients" />
                         <TextView
                             android:id="@+id/numbPatientsTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/num_patients" />
 
-                        <TextView
-                            android:id="@+id/textView4"
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/patientsText" />
-                    </LinearLayout>
-                </LinearLayout>
+                            android:layout_height="wrap_content">
 
-                <!-- RIGHT COLUMN: APPOINTMENT STATS -->
-                <LinearLayout
-                    android:orientation="horizontal"
+                            <!-- Their original count text -->
+                            <TextView
+                                android:id="@+id/textView3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Patients: 0"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Patients"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- APPOINTMENTS MADE CARD -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp">
-
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="39dp"
-                        android:layout_height="33dp"
-                        app:srcCompat="@drawable/calender" />
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp">
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/textView5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/num_appointments" />
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/calender" />
 
-                        <TextView
-                            android:id="@+id/textView6"
+                        <LinearLayout
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/appointmentsText" />
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textView5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Appointments Made: 0"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Appointments"
+                                android:textSize="12sp" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
-            <!-- END HORIZONTAL BLOCK -->
 
             <!-- BUTTON BAR -->
             <LinearLayout
@@ -155,57 +173,58 @@
                 android:orientation="horizontal"
                 android:padding="8dp"
                 android:weightSum="4"
-                app:layout_constraintTop_toBottomOf="@id/statsContainer"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dashboardRow">
 
                 <Button
                     android:id="@+id/button5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/patientsBtn"
-                    android:textSize="8sp" />
+                    android:textSize="8sp"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/button4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/criticalBtn"
-                    android:textSize="8sp" />
+                    android:textSize="8sp"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/button6"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/clinicTestBtn"
-                    android:textSize="8sp" />
+                    android:textSize="8sp"
+                    android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/button7"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/appointmentBtnText"
-                    android:textSize="8sp" />
+                    android:textSize="8sp"
+                    android:layout_weight="1" />
+
             </LinearLayout>
 
-            <!-- ORIGINAL FAB -->
+            <!-- ADD PATIENT FAB -->
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/fabAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
-                android:backgroundTint="#2196F3"
                 android:text="@string/fabBtnText"
                 android:textColor="@android:color/white"
+                android:backgroundTint="#2196F3"
                 app:icon="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- NEW APPOINTMENT FAB -->
+            <!-- ADD APPOINTMENT FAB -->
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/fabAddAppointment"
                 android:layout_width="wrap_content"
@@ -225,15 +244,16 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="16dp"
-                app:layout_constraintTop_toBottomOf="@id/buttonBar"
-                app:layout_constraintBottom_toTopOf="@id/fabAdd"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/buttonBar"
+                app:layout_constraintBottom_toTopOf="@id/fabAdd" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
+    <!-- NAVIGATION DRAWER -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

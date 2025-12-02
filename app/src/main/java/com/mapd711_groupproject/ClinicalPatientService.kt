@@ -6,6 +6,8 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
 data class ClinicalPatient(
     val _id: String,
@@ -15,6 +17,13 @@ data class ClinicalPatient(
 object ClinicalPatientService {
     private const val PATIENTS_URL = Globals.BASE_URL+"/patients"
 
+
+    // ✅ KEEP YOUR OKHTTP CLIENT
+    private val client = OkHttpClient()
+
+    // -----------------------------------------------------------
+    // FETCH ALL PATIENT NAMES + IDS (both your logic + theirs kept)
+    // -----------------------------------------------------------
     suspend fun fetchPatientNamesAndIds(): List<ClinicalPatient> {
         return withContext(Dispatchers.IO) {
             try {
@@ -25,7 +34,8 @@ object ClinicalPatientService {
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    val responseText = connection.inputStream.bufferedReader().use { it.readText() }
+                    val responseText =
+                        connection.inputStream.bufferedReader().use { it.readText() }
                     Log.d("ClinicalPatientService", "Response: $responseText")
 
                     val jsonArray = JSONArray(responseText)
@@ -42,6 +52,7 @@ object ClinicalPatientService {
                             list.add(ClinicalPatient(id, name))
                         }
                     }
+
                     return@withContext list
                 } else {
                     Log.e("ClinicalPatientService", "Error Code: ${connection.responseCode}")
@@ -52,6 +63,30 @@ object ClinicalPatientService {
                 Log.e("ClinicalPatientService", "Exception: ${e.message}")
                 return@withContext emptyList()
             }
+        }
+    }
+
+    // -----------------------------------------------------------
+    // FETCH TOTAL PATIENT COUNT (your added function)
+    // -----------------------------------------------------------
+    suspend fun fetchPatientsCount(): Int {
+        return try {
+            val request = Request.Builder()
+                .url(PATIENTS_URL)
+                .get()
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) return 0
+
+            val body = response.body?.string() ?: return 0
+            val arr = JSONArray(body)
+
+            arr.length()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
         }
     }
 }
