@@ -34,60 +34,98 @@
                 android:id="@+id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
                 android:fontFamily="sans-serif-black"
                 android:text="@string/add_appointment"
                 android:textSize="20sp"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/etName"
                 android:layout_width="287dp"
                 android:layout_height="59dp"
                 android:hint="@string/enter_patient_name"
-                app:layout_constraintTop_toBottomOf="@id/titleText"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/titleText" />
 
             <EditText
                 android:id="@+id/etDoctor"
                 android:layout_width="287dp"
                 android:layout_height="59dp"
                 android:hint="@string/enter_doctor_name"
-                app:layout_constraintTop_toBottomOf="@id/etName"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/etName" />
 
             <EditText
                 android:id="@+id/etDate"
                 android:layout_width="287dp"
                 android:layout_height="59dp"
-                android:hint="@string/select_date"
                 android:focusable="false"
-                app:layout_constraintTop_toBottomOf="@id/etDoctor"
+                android:hint="@string/select_date"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/etDoctor" />
 
             <EditText
                 android:id="@+id/etTime"
                 android:layout_width="287dp"
                 android:layout_height="59dp"
-                android:hint="@string/select_time"
                 android:focusable="false"
-                app:layout_constraintTop_toBottomOf="@id/etDate"
+                android:hint="@string/select_time"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/etDate" />
 
             <EditText
                 android:id="@+id/etReason"
                 android:layout_width="287dp"
                 android:layout_height="59dp"
                 android:hint="@string/enter_reason"
-                app:layout_constraintTop_toBottomOf="@id/etTime"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etTime" />
+
+            <!-- 🔥 FIXED EMERGENCY SECTION (Proper Constraints, Proper Layout) -->
+            <!-- 🔥 CENTERED EMERGENCY SECTION -->
+            <TextView
+                android:id="@+id/emergencyLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Is this an emergency?"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/etReason"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <RadioGroup
+                android:id="@+id/radioEmergency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/emergencyLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <RadioButton
+                    android:id="@+id/radioEmergencyYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yes" />
+
+                <RadioButton
+                    android:id="@+id/radioEmergencyNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No"
+                    android:checked="true" />
+            </RadioGroup>
+
 
             <Button
                 android:id="@+id/btnSave"
@@ -95,11 +133,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/saveBtn"
                 android:layout_marginTop="60dp"
-                app:layout_constraintTop_toBottomOf="@id/etReason"
+                app:layout_constraintTop_toBottomOf="@id/radioEmergency"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
 </androidx.drawerlayout.widget.DrawerLayout>
