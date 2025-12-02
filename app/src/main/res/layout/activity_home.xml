@@ -91,6 +91,11 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="10dp"
                             android:src="@drawable/patients" />
+                        <TextView
+                            android:id="@+id/numbPatientsTxt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/num_patients" />
 
                         <LinearLayout
                             android:orientation="vertical"
