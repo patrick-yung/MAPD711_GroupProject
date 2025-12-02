@@ -30,23 +30,6 @@
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 
-    <!-- Team Names -->
-    <TextView
-        android:id="@+id/tvTeam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-    <!-- Project Title -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Patient Clinical Data\n and Appointment System"
-        android:textAlignment="center"
-        android:textSize="22sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
 
     <!-- Team Names -->
     <TextView

@@ -18,7 +18,6 @@
         <item>Scheduled</item>
         <item>Pending</item>
         <item>Cancelled</item>
-        <item>Attended</item>
     </string-array>
 
 </resources>
