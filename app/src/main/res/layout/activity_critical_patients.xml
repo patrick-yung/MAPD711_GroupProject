@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tvCriticalTitle"
-        android:text="⚠️ Critical Test Records"
+        android:text="@string/critical_test_records"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"

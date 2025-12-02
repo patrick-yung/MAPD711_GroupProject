@@ -8,7 +8,7 @@
     android:gravity="center_horizontal">
 
     <TextView
-        android:text="Clinical Records"
+        android:text="@string/clinical_records"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
@@ -18,7 +18,7 @@
         android:layout_marginBottom="32dp"/>
 
     <TextView
-        android:text="Select a Patient to view records:"
+        android:text="@string/select_patient"
         android:textSize="16sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -34,7 +34,7 @@
         android:id="@+id/btnViewRecord"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="View Patient History"
+        android:text="@string/view_patient_history"
         android:textSize="18sp"
         android:layout_marginTop="32dp"
         android:backgroundTint="#2196F3"/>

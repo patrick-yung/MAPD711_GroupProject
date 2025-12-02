@@ -42,7 +42,7 @@
         android:layout_height="46dp"
         android:layout_marginTop="36dp"
         android:fontFamily="sans-serif-black"
-        android:text="Clinical Test"
+        android:text="@string/clinical_test"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.261"
@@ -71,7 +71,7 @@
                 android:id="@+id/patientName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Patient ID or name" />
+                android:hint="@string/patient_id_or_name" />
 
             <!-- Test type selector -->
             <Spinner
@@ -88,7 +88,7 @@
                 android:layout_height="48dp"
                 android:padding="12dp"
                 android:gravity="center_vertical"
-                android:text="Select date"
+                android:text="@string/date"
                 android:textColor="@android:color/black"
                 android:layout_marginTop="12dp"
                 android:clickable="true"
@@ -104,12 +104,12 @@
                 android:visibility="gone"
                 android:layout_marginTop="12dp">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Heart Rate (bpm)"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/heart_rate"/>
                 <EditText
                     android:id="@+id/etHeartRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="e.g. 72"
+                    android:hint="@string/hint"
                     android:inputType="number"/>
             </LinearLayout>
 
@@ -122,21 +122,21 @@
                 android:visibility="gone"
                 android:layout_marginTop="12dp">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blood Pressure (mmHg)"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/blood_pressure"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="6dp">
                     <EditText
                         android:id="@+id/etSystolic"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:hint="Systolic"
+                        android:hint="@string/systolic"
                         android:inputType="number"/>
                     <EditText
                         android:id="@+id/etDiastolic"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:hint="Diastolic"
+                        android:hint="@string/diastolic"
                         android:inputType="number"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
@@ -145,7 +145,7 @@
                     android:id="@+id/etBPpulse"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Pulse (optional)"
+                    android:hint="@string/pulse"
                     android:inputType="number"
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
@@ -159,12 +159,12 @@
                 android:visibility="gone"
                 android:layout_marginTop="12dp">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Respiratory Rate (breaths/min)"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/respiratory_rate"/>
                 <EditText
                     android:id="@+id/etRespRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="e.g. 16"
+                    android:hint="@string/hint1"
                     android:inputType="number"/>
             </LinearLayout>
 
@@ -173,7 +173,7 @@
                 android:id="@+id/etNotes"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="Notes (optional)"
+                android:hint="@string/notes"
                 android:inputType="textMultiLine"
                 android:gravity="top"
                 android:layout_marginTop="12dp"/>
@@ -182,7 +182,7 @@
                 android:id="@+id/btnSaveTest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save Test"
+                android:text="@string/save_test"
                 android:backgroundTint="#2196F3"
                 android:layout_marginTop="12dp"/>
 
@@ -190,7 +190,7 @@
                 android:id="@+id/tvSavedTests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No tests saved yet"
+                android:text="@string/no_tests_saved_yet"
                 android:layout_marginTop="14dp"
                 android:visibility="gone"/>
 
