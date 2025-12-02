@@ -64,7 +64,6 @@ class HomeActivity : BaseActivity() {
         val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
         val clinicTestBtn = findViewById<Button>(R.id.button6)
         val criticalBtn = findViewById<Button>(R.id.button4)
-        loadPatientCount()
 
 
 
@@ -79,6 +78,8 @@ class HomeActivity : BaseActivity() {
                 val lastPatientPhone = data?.getStringExtra("patientPhone")
                 val lastPatientCondition = data?.getStringExtra("patientCondition")
                 val lastPatientGender = data?.getStringExtra("patientGender")
+                loadPatientCount()
+
 
 
                 if (lastPatientName != null && lastPatientAge != null && lastPatientPhone != null && lastPatientCondition != null && lastPatientGender != null) {
