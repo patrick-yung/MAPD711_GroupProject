@@ -20,6 +20,12 @@
             android:name=".PatientDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".PatientHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClinicalTestActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddPatientActivity"
             android:exported="false" />
         <activity
