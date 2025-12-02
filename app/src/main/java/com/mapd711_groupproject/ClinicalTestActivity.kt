@@ -43,7 +43,7 @@ class ClinicalTestActivity : AppCompatActivity() {
             insets
         }
 
-        //take patient name from add patient activityjony
+        //take patient name from add patient activity
         val patientName = intent.getStringExtra("PATIENT_NAME")
         val patientId = intent.getStringExtra("PATIENT_ID") ?: ""
 
@@ -125,7 +125,7 @@ class ClinicalTestActivity : AppCompatActivity() {
 
             // Validation
             if (value.isEmpty()) {
-                Toast.makeText(this, "Enter a test value", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
