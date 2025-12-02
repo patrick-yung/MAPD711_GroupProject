@@ -64,7 +64,7 @@ class HomeActivity : BaseActivity() {
         val fabAdd = findViewById<ExtendedFloatingActionButton>(R.id.fabAdd)
         val clinicTestBtn = findViewById<Button>(R.id.button6)
         val criticalBtn = findViewById<Button>(R.id.button4)
-
+        loadPatientCount()
 
 
         // 🔹 Patient Activity launcher
