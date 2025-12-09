@@ -103,7 +103,7 @@ class AppointmentAdapter(
 
         tvDialogPatient.text = "Patient: ${appointment.patientName}"
 
-        val statusOptions = arrayOf("Scheduled", "Pending", "Cancelled", "Attended")
+        val statusOptions = arrayOf("Scheduled", "Cancelled")
 
         spinnerStatus.adapter = ArrayAdapter(
             context,

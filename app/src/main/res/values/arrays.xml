@@ -16,7 +16,6 @@
     <!-- Keeping YOUR full appointment options -->
     <string-array name="appointment_status_options">
         <item>Scheduled</item>
-        <item>Pending</item>
         <item>Cancelled</item>
     </string-array>
 

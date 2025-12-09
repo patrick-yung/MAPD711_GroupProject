@@ -26,7 +26,7 @@ class ViewAppointments : Fragment() {
 
     private val TAG = "ViewAppointments"
 
-    private val APPOINTMENTS_URL =Globals.BASE_URL+"/appointments"
+    private val APPOINTMENTS_URL ="https://mapd713-group-project-2.onrender.com/appointments"
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: AppointmentAdapter

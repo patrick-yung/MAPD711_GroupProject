@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,6 +25,7 @@ class AddPatientActivity : BaseActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_add_patient)
 
+        // Drawer / toolbar
         setupDrawer(R.id.nav_home)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -35,25 +35,27 @@ class AddPatientActivity : BaseActivity() {
         }
 
         val name = findViewById<EditText>(R.id.editTextName)
-        val prefillName = intent.getStringExtra("fromAppointmentName")
-        if (!prefillName.isNullOrEmpty()) {
-            name.setText(prefillName)
-        }
-
         val age = findViewById<EditText>(R.id.editTextAge)
         val phone = findViewById<EditText>(R.id.editTextPhone)
         val condition = findViewById<EditText>(R.id.editTextCondition)
         val selectGender = findViewById<RadioGroup>(R.id.radioGroupGender)
         val saveButton = findViewById<Button>(R.id.button2)
-        var gender = ""
 
+        // If we came from an Appointment → prefill the patient name
+        val prefillName = intent.getStringExtra("fromAppointmentName")
+        if (!prefillName.isNullOrEmpty()) {
+            name.setText(prefillName)
+        }
+
+        // Edit mode support (keep your existing behavior)
         val isEdit = intent.getBooleanExtra("isEdit", false)
         if (isEdit) {
             name.setText(intent.getStringExtra("patientName"))
             age.setText(intent.getStringExtra("patientAge"))
             phone.setText(intent.getStringExtra("patientPhone"))
             condition.setText(intent.getStringExtra("patientCondition"))
-            // We’re not pre-selecting gender here because the old version also didn’t
+
+            // If you later want to pre-select gender in edit mode, you can add it here
         }
 
         saveButton.setOnClickListener {
@@ -62,22 +64,21 @@ class AddPatientActivity : BaseActivity() {
             val phoneText = phone.text.toString().trim()
             val conditionText = condition.text.toString().trim()
 
-            gender = when (selectGender.checkedRadioButtonId) {
+            val gender = when (selectGender.checkedRadioButtonId) {
                 R.id.radioMale -> "Male"
                 R.id.radioFemale -> "Female"
                 else -> ""
             }
 
             if (gender.isEmpty()) {
-                Toast.makeText(this, "Please fill in all Gender fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please select a gender", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (nameText.isEmpty() ||
                 ageText.isEmpty() ||
                 phoneText.isEmpty() ||
-                conditionText.isEmpty() ||
-                gender.isEmpty()
+                conditionText.isEmpty()
             ) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -88,9 +89,10 @@ class AddPatientActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            // 🔥 Mark matching appointments as Attended (Android-only logic)
+            // 🔥 ANDROID-ONLY LINK: mark matching appointments as Attended
             markAppointmentsAsAttended(nameText)
 
+            // Send data back to HomeActivity
             val resultIntent = Intent().apply {
                 putExtra("patientName", nameText)
                 putExtra("patientAge", ageText)
@@ -102,58 +104,80 @@ class AddPatientActivity : BaseActivity() {
             setResult(Activity.RESULT_OK, resultIntent)
 
             Toast.makeText(this, "Patient Data Saved", Toast.LENGTH_SHORT).show()
-
             finish()
         }
     }
 
     // --------------------------------------------------------------------
-    // 🔥 NEW FUNCTION — Attended matching WITHOUT backend logic
+    // 🔥 NEW FUNCTION — Mark any appointments with this name as "Attended"
+    //    No backend changes needed; all done from Android.
     // --------------------------------------------------------------------
     private fun markAppointmentsAsAttended(patientName: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val url = URL("https://mapd713-group-project-2.onrender.com/appointments")
+                val baseUrl = "https://mapd713-group-project-2.onrender.com/appointments"
+
+                // 1) GET all appointments
+                val url = URL(baseUrl)
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
 
-                if (conn.responseCode !in 200..299) return@launch
+                if (conn.responseCode !in 200..299) {
+                    conn.disconnect()
+                    return@launch
+                }
 
-                val text = conn.inputStream.bufferedReader().readText()
+                val text = conn.inputStream.bufferedReader().use { it.readText() }
+                conn.disconnect()
+
                 val arr = JSONArray(text)
+
+                fun normalizeName(str: String?): String =
+                    (str ?: "")
+                        .trim()
+                        .lowercase()
+
+                val target = normalizeName(patientName)
 
                 for (i in 0 until arr.length()) {
                     val obj = arr.getJSONObject(i)
+                    val apptName = normalizeName(obj.optString("patientName", ""))
 
-                    val nameA = obj.getString("patientName")
-                    if (nameA.trim().lowercase() != patientName.trim().lowercase()) continue
+                    if (apptName != target) continue
 
-                    val id = obj.getString("_id")
+                    val id = obj.optString("_id", "")
+                    if (id.isEmpty()) continue
 
-                    val updateUrl =
-                        URL("https://mapd713-group-project-2.onrender.com/appointments/$id")
-                    val updateConn = updateUrl.openConnection() as HttpURLConnection
-                    updateConn.requestMethod = "PUT"
-                    updateConn.setRequestProperty("Content-Type", "application/json")
-                    updateConn.doOutput = true
-
+                    // 2) Build updated appointment JSON (keep all fields, just force status)
                     val updatedObj = JSONObject().apply {
                         put("_id", id)
-                        put("patientName", obj.getString("patientName"))
-                        put("doctorName", obj.getString("doctorName"))
-                        put("appointmentDate", obj.getString("appointmentDate"))
-                        put("reason", obj.getString("reason"))
-                        put("status", "Attended")
-                        put("isEmergency", obj.optBoolean("isEmergency"))
+                        put("patientName", obj.optString("patientName", ""))
+                        put("doctorName", obj.optString("doctorName", ""))
+                        put("appointmentDate", obj.optString("appointmentDate", ""))
+                        put("reason", obj.optString("reason", ""))
+                        put("status", "Attended")     // 👈 FORCE ATTENDED
+                        put("isEmergency", obj.optBoolean("isEmergency", false))
                     }
 
-                    updateConn.outputStream.write(updatedObj.toString().toByteArray())
-                    updateConn.outputStream.close()
+                    // 3) PUT the updated appointment back
+                    val putUrl = URL("$baseUrl/$id")
+                    val putConn = putUrl.openConnection() as HttpURLConnection
+                    putConn.requestMethod = "PUT"
+                    putConn.setRequestProperty("Content-Type", "application/json")
+                    putConn.doOutput = true
 
-                    updateConn.responseCode
+                    putConn.outputStream.bufferedWriter().use { writer ->
+                        writer.write(updatedObj.toString())
+                    }
+
+                    // fire the request (we don't care much about the response body here)
+                    putConn.responseCode
+                    putConn.disconnect()
                 }
 
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+                // Silently ignore – we don't want to break patient creation if this fails
+            }
         }
     }
 }

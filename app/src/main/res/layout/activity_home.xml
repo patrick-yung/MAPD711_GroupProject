@@ -81,10 +81,10 @@
                     app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="12dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -94,19 +94,18 @@
 
 
                         <LinearLayout
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
                             <!-- Their original count text -->
                             <TextView
                                 android:id="@+id/textView3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="51dp"
                                 android:text="Total\n Patients: 0"
-                                android:textStyle="bold"
-                                android:textSize="14sp" />
-
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
 
                         </LinearLayout>
@@ -123,10 +122,10 @@
                     app:cardElevation="6dp">
 
                     <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="12dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="77dp"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
 
                         <ImageView
                             android:layout_width="40dp"
@@ -135,17 +134,17 @@
                             android:src="@drawable/calender" />
 
                         <LinearLayout
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/textView5"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Appointments Made: 0"
-                                android:textStyle="bold"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
 
 
                         </LinearLayout>
