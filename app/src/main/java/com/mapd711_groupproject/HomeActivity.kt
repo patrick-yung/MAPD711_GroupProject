@@ -106,6 +106,8 @@ class HomeActivity : BaseActivity() {
         // View Patients
         patientsBtn.setOnClickListener {
             if (currentFragment != "patients") {
+                refreshDashboardCounts(totalPatientsText, totalAppointmentsText)
+
                 GlobalScope.launch {
                     withContext(Dispatchers.Main) {
                         val viewPatientsFragment = ViewPatients()
